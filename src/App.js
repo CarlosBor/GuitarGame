@@ -6,23 +6,27 @@ import './style.css'
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.state={
+      tuning:["E","B","G","D","A","E"]
+    };
   }
+
 
   render(){
     return (
       <div class="game">
           <div class="board">
             <div>
-                <div>{this.renderFret("A")}</div>
-                <div>A</div>
-                <div>D</div>
-                <div>G</div>
-                <div>B</div>
-                <div>E</div>
+                <div>{this.state.tuning[0]}</div>
+                <div>{this.state.tuning[1]}</div>
+                <div>{this.state.tuning[2]}</div>
+                <div>{this.state.tuning[3]}</div>
+                <div>{this.state.tuning[4]}</div>
+                <div>{this.state.tuning[5]}</div>
             </div>
           </div>
           <div class="options">
-              {this.renderOptions(6)}
+              {this.renderTuning(6)}
           </div>
           <div class="score"></div>
       </div>
@@ -32,8 +36,32 @@ class Game extends React.Component {
   renderFret(note){
     return <Fret value={note} />
   }
-  renderOptions(wire){
-    return <Options value={wire}/>
+  renderTuning(wires){
+    return <Options 
+      amount={wires} 
+      onChange={() => this.clicktest()}
+    />
+  }
+
+  clicktest(test){
+    console.log(test);
+  }
+
+  handleTuningClick(event){
+    var target = event.target.value.split(",")[0];
+    var tunedNote = event.target.value.split(",")[1];
+    this.setState(
+      state =>{
+        var list = state.list.map((element, j) => {
+          if (j===target){
+            return tunedNote;
+          }else{
+            return element;
+          }
+        })
+      });
+
+    console.log(target + " " + tunedNote);
   }
 }
 
@@ -46,19 +74,22 @@ class Fret extends React.Component{
 }
 
 class Options extends React.Component{
+
+  /*
   setTuning(event){
     console.log(event.target.value);
-  }
+  }*/
 
-  generateTuningDropdown(wire){
+  //Maps from the notes array to make 12 <option> nodes, then from that to make the desired amount of <select> nodes with <option> in them
+  generateTuningDropdowns(wireNumber){
     var allNotes = []
-    for(var i =0;i<wire;i++){
+    for(var i=0;i<wireNumber;i++){
       allNotes[i] = noteCircle.map((notes)=>
-      <option value = {i+","+notes}>{notes}</option>
+       <option value = {i+","+notes}>{notes}</option>
       )
     }
 
-    var totalNotes = allNotes.map((elements)=>
+    var totalDropdowns = allNotes.map((elements)=>
       <select>
         {elements}
       </select>
@@ -66,20 +97,19 @@ class Options extends React.Component{
 
     return(
       <div>
-        {totalNotes}
+        {totalDropdowns}
       </div>
     )
   }
 
   render(){
     return (
-      <div onChange={this.setTuning.bind(this)}>
-        {this.generateTuningDropdown(this.props.value)}
+      <div onChange={() => this.props.onChange()}>
+        {this.generateTuningDropdowns(this.props.amount)}
       </div>
       )
   }
 }
-
 
 /*Options tiene que tener un prop o state cuya informacion vaya a game, 
 y de ahi pase a board una funcion para su renderizado */
