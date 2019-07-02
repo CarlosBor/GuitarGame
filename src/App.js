@@ -39,12 +39,13 @@ class Game extends React.Component {
   renderTuning(wires){
     return <Options 
       amount={wires} 
-      onChange={() => this.clicktest()}
+      onChange={this.clicktest}
     />
   }
 
-  clicktest(test){
-    console.log(test);
+  clicktest(event){
+    console.log("Wohoo");
+    console.log(event);
   }
 
   handleTuningClick(event){
@@ -104,7 +105,7 @@ class Options extends React.Component{
 
   render(){
     return (
-      <div onChange={() => this.props.onChange()}>
+      <div onChange={() => this.props.onChange(this)}>
         {this.generateTuningDropdowns(this.props.amount)}
       </div>
       )
