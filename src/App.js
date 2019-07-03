@@ -9,6 +9,7 @@ class Game extends React.Component {
     this.state={
       tuning:["E","B","G","D","A","E"]
     };
+//    this.handleTuningClick = this.handleTuningClick.bind(this);
   }
 
 
@@ -42,15 +43,21 @@ class Game extends React.Component {
       onChange={this.handleTuningClick}
     />
   }
-
   clicktest(event){
     console.log("Wohoo");
     console.log(event.target.value);
   }
 
-  handleTuningClick(event){
+  handleTuningClick = event => {
     var target = event.target.value.split(",")[0];
     var tunedNote = event.target.value.split(",")[1];
+    var newTuning = this.state.tuning.concat();
+    newTuning[target] = tunedNote;
+    this.setState({
+        tuning : newTuning
+      }
+    )
+/*
     this.setState(
       state =>{
         var list = state.list.map((element, j) => {
@@ -61,8 +68,7 @@ class Game extends React.Component {
           }
         })
       });
-
-    console.log(target + " " + tunedNote);
+      */
   }
 }
 
@@ -91,7 +97,7 @@ class Options extends React.Component{
     }
 
     var totalDropdowns = allNotes.map((elements)=>
-      <select value={this.selected} onChange={this.props.handleTuningClick}>
+      <select value={this.selected} onChange={this.props.onChange}>
         {elements}
       </select>
     )
