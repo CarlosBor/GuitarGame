@@ -19,7 +19,7 @@ class Game extends React.Component {
     return (
       <div class="game">
           <div class="board">
-              {this.renderFrets(6,4,["E","B","G","D","A","E"])}
+              {this.renderFrets(6,4,this.state.tuning)}
           </div>
           <div class="options">
               {this.renderTuning(6)}
@@ -65,7 +65,7 @@ class Board extends React.Component{
       notesUsed[i] = calculateNote(wireTuning,i);
     }
     fretNodes = notesUsed.map((note) =>
-      <div class="fret" value={note}></div>
+      <div class="fret" value={note}>{note}</div>
     );
     return(
       <div class="wire">
