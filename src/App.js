@@ -9,7 +9,7 @@ class Game extends React.Component {
     this.state={
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
-      fretNumber:1,
+      fretNumber:12,
     };
 //    this.handleTuningClick = this.handleTuningClick.bind(this);
   }
@@ -19,10 +19,13 @@ class Game extends React.Component {
     return (
       <div class="game">
           <div class="board">
-              {this.renderFrets(6,4,this.state.tuning)}
+              {this.renderFrets(this.state.fretNumber,this.state.wireNumber,this.state.tuning)}
           </div>
           <div class="options">
               {this.renderTuning(6)}
+
+              {/* render number of frets */
+              /* render number of strings */}
           </div>
           <div class="score"></div>
       </div>
@@ -85,6 +88,7 @@ class Board extends React.Component{
     )
   }
 
+  
   render(){
     return(
       <div class="fretBoard">
@@ -95,35 +99,57 @@ class Board extends React.Component{
 }
 
 class Options extends React.Component{
+  render(){
+    return (
+      <>
+        <TuningSelector
+          amount = {this.props.amount}
+          onChange = {this.props.onChange}
+        />
+        <StringNumberSelector/>
+      </>
+      )
+  }
+}
 
-  //Maps from the notes array to make 12 <option> nodes, then from that to make the desired amount of <select> nodes with <option> in them
-  generateTuningDropdowns(wireNumber){
-    var allNotes = [];
-    for(var i=0;i<wireNumber;i++){
-      allNotes[i] = noteCircle.map((notes)=>
-       <option value = {i+","+notes}>{notes}</option>
+class TuningSelector extends React.Component{
+    //Maps from the notes array to make 12 <option> nodes, then from that to make the desired amount of <select> nodes with <option> in them
+    generateTuningDropdowns(wireNumber){
+      var allNotes = [];
+      for(var i=0;i<wireNumber;i++){
+        allNotes[i] = noteCircle.map((notes)=>
+         <option value = {i+","+notes}>{notes}</option>
+        )
+      }
+  
+      var totalDropdowns = allNotes.map((elements)=>
+        <select value={this.selected} onChange={this.props.onChange}>
+          {elements}
+        </select>
+      )
+  
+      return(
+        <div class="tuningOptions">
+          {totalDropdowns}
+        </div>
       )
     }
 
-    var totalDropdowns = allNotes.map((elements)=>
-      <select value={this.selected} onChange={this.props.onChange}>
-        {elements}
-      </select>
-    )
 
-    return(
-      <div>
-        {totalDropdowns}
-      </div>
-    )
-  }
-
-  render(){
-    return (
-      <div>
-        {this.generateTuningDropdowns(this.props.amount)}
-      </div>
+    render(){
+      return(
+        <>
+          {this.generateTuningDropdowns(this.props.amount)}
+        </>
       )
+    }
+}
+
+class StringNumberSelector extends React.Component{
+  render(){
+    return(
+      <div class="testing"></div>
+    )
   }
 }
 
@@ -133,7 +159,6 @@ const noteCircle = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "
 
 //I need a function that adds a line of divs to div.board, getting their note from their left or from options if there isn't any.
 function calculateNote(initialNote, stepNumber){
-  var noteCircle = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
     //Given a initial note and a number of steps, it returns the note X steps from the initial note.
     initialNote = initialNote.toUpperCase();
     stepNumber = stepNumber + findNote(initialNote);
