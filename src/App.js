@@ -11,39 +11,36 @@ class Game extends React.Component {
       wireNumber:6,
       fretNumber:12,
     };
-//    this.tuningChange = this.tuningChange.bind(this);
   }
-
 
   render(){
     return (
       <div class="game">
           <div class="board">
-              {this.renderFrets(this.state.fretNumber,this.state.wireNumber,this.state.tuning)}
+              {this.renderBoard()}
           </div>
           <div class="options">
-              {this.renderTuning(this.state.wireNumber)}
-
-              {/* render number of frets */
-              /* render number of strings */}
+              {this.renderOptions()}
           </div>
           <div class="score"></div>
       </div>
     );
   }
-  renderFrets(numberOfFrets,numberOfWires,tuning){
+
+  renderBoard(){
     return <Board
-      numberOfFrets = {numberOfFrets}
-      numberOfWires = {numberOfWires}
-      tuning = {tuning}
+      numberOfFrets = {this.state.fretNumber}
+      numberOfWires = {this.state.wireNumber}
+      currentTuning = {this.state.tuning}
     />
   }
-  renderTuning(wires){
+
+  renderOptions(){
     return <Options 
-      amount={wires} 
+      wireNumber={this.state.wireNumber} 
+      currentTuning = {this.state.tuning}
       tuningChange={this.tuningChange}
       stringNumberChange={this.stringNumberChange}
-      currentTuning = {this.state.tuning}
     />
   }
   /* React.Component doesn't auto bind methods to itself. You need to bind them yourself */
@@ -87,7 +84,6 @@ class Board extends React.Component{
   }
 
   renderBoard(numberOfFrets, numberOfWires, tuning){
- //Go for horizontal divs filled with frets instead of columns
     var wires = [];
     for (var i=0;i<numberOfWires;i++){
       wires[i] = this.renderWire(numberOfFrets,tuning[i]);
@@ -101,7 +97,7 @@ class Board extends React.Component{
   render(){
     return(
       <div class="fretBoard">
-      {this.renderBoard(this.props.numberOfFrets, this.props.numberOfWires,this.props.tuning)}
+      {this.renderBoard(this.props.numberOfFrets, this.props.numberOfWires,this.props.currentTuning)}
       </div>
     )
   }
@@ -113,7 +109,7 @@ class Options extends React.Component{
     return (
       <>
         <TuningSelector
-          amount = {this.props.amount}
+          wireNumber = {this.props.wireNumber}
           tuningChange = {this.props.tuningChange}
           currentTuning = {this.props.currentTuning}
         />
@@ -138,7 +134,6 @@ class TuningSelector extends React.Component{
   
       var totalDropdowns = allNotes.map((elements,index)=>
         <select value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
-          {/*this.props.currentTuning[i]*/}
           {elements}
         </select>
       )
@@ -154,7 +149,7 @@ class TuningSelector extends React.Component{
     render(){
       return(
         <>
-          {this.generateTuningDropdowns(this.props.amount)}
+          {this.generateTuningDropdowns(this.props.wireNumber)}
         </>
       )
     }
@@ -169,8 +164,6 @@ class StringNumberSelector extends React.Component{
   }
 }
 
-/*Options tiene que tener un prop o state cuya informacion vaya a game, 
-y de ahi pase a board una funcion para su renderizado */
 const noteCircle = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
 
 //I need a function that adds a line of divs to div.board, getting their note from their left or from options if there isn't any.
