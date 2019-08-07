@@ -11,7 +11,7 @@ class Game extends React.Component {
       wireNumber:6,
       fretNumber:12,
     };
-//    this.handleTuningClick = this.handleTuningClick.bind(this);
+//    this.tuningChange = this.tuningChange.bind(this);
   }
 
 
@@ -22,7 +22,7 @@ class Game extends React.Component {
               {this.renderFrets(this.state.fretNumber,this.state.wireNumber,this.state.tuning)}
           </div>
           <div class="options">
-              {this.renderTuning(6)}
+              {this.renderTuning(this.state.wireNumber)}
 
               {/* render number of frets */
               /* render number of strings */}
@@ -41,14 +41,16 @@ class Game extends React.Component {
   renderTuning(wires){
     return <Options 
       amount={wires} 
-      onChange={this.handleTuningClick}
+      tuningChange={this.tuningChange}
+      stringNumberChange={this.stringNumberChange}
+      currentTuning = {this.state.tuning}
     />
   }
   /* React.Component doesn't auto bind methods to itself. You need to bind them yourself */
-  /* Option A: Bind them in the constructor, as in this.handleTuningClick = this.handleTuningClick.bind(this); in the constructor of this class*/
-  /* Option B: when passed as a prop, pass it as this.handleTuningClick.bind(this) */
+  /* Option A: Bind them in the constructor, as in this.tuningChange = this.tuningChange.bind(this); in the constructor of this class*/
+  /* Option B: when passed as a prop, pass it as this.tuningChange.bind(this) */
   /* Option C: What is displayed here, define the function as an event that executes a function ¿?*/
-  handleTuningClick = event => {
+  tuningChange = event => {
     var target = event.target.value.split(",")[0];
     var tunedNote = event.target.value.split(",")[1];
     var newTuning = this.state.tuning.concat();
@@ -57,6 +59,13 @@ class Game extends React.Component {
         tuning : newTuning
       }
     )
+  }
+
+  stringNumberChange = event => {
+    var newWireNumber = event.target.value;
+    this.setState({
+      wireNumber : newWireNumber
+    })
   }
 }
 
@@ -88,7 +97,7 @@ class Board extends React.Component{
     )
   }
 
-  
+
   render(){
     return(
       <div class="fretBoard">
@@ -99,17 +108,22 @@ class Board extends React.Component{
 }
 
 class Options extends React.Component{
+
   render(){
     return (
       <>
         <TuningSelector
           amount = {this.props.amount}
-          onChange = {this.props.onChange}
+          tuningChange = {this.props.tuningChange}
+          currentTuning = {this.props.currentTuning}
         />
-        <StringNumberSelector/>
+        <StringNumberSelector
+          stringNumberChange = {this.props.stringNumberChange}
+        />
       </>
       )
   }
+
 }
 
 class TuningSelector extends React.Component{
@@ -122,8 +136,9 @@ class TuningSelector extends React.Component{
         )
       }
   
-      var totalDropdowns = allNotes.map((elements)=>
-        <select value={this.selected} onChange={this.props.onChange}>
+      var totalDropdowns = allNotes.map((elements,index)=>
+        <select value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
+          {/*this.props.currentTuning[i]*/}
           {elements}
         </select>
       )
@@ -146,9 +161,10 @@ class TuningSelector extends React.Component{
 }
 
 class StringNumberSelector extends React.Component{
+  
   render(){
     return(
-      <div class="testing"></div>
+      <input type="number" min="1" max="6" defaultValue="6" onChange={this.props.stringNumberChange}/>
     )
   }
 }
