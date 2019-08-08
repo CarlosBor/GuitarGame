@@ -133,9 +133,11 @@ class TuningSelector extends React.Component{
       }
   
       var totalDropdowns = allNotes.map((elements,index)=>
+        <>
         <select value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
           {elements}
         </select>
+        <input type="checkbox"></input></>
       )
   
       return(
