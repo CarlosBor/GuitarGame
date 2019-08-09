@@ -10,6 +10,7 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
+      activeTunings:[true,true,true,true,true,true,true,true,true]
     };
   }
 
@@ -41,6 +42,7 @@ class Game extends React.Component {
       currentTuning = {this.state.tuning}
       tuningChange={this.tuningChange}
       stringNumberChange={this.stringNumberChange}
+      activeTunings = {this.state.activeTunings}
     />
   }
   /* React.Component doesn't auto bind methods to itself. You need to bind them yourself */
@@ -63,6 +65,9 @@ class Game extends React.Component {
     this.setState({
       wireNumber : newWireNumber
     })
+  }
+  activeWiresChange = event => {
+   // var newActiveWires = 
   }
 }
 
@@ -112,6 +117,7 @@ class Options extends React.Component{
           wireNumber = {this.props.wireNumber}
           tuningChange = {this.props.tuningChange}
           currentTuning = {this.props.currentTuning}
+          activeTunings = {this.props.activeTunings}
         />
         <StringNumberSelector
           stringNumberChange = {this.props.stringNumberChange}
@@ -119,7 +125,6 @@ class Options extends React.Component{
       </>
       )
   }
-
 }
 
 class TuningSelector extends React.Component{
@@ -134,10 +139,11 @@ class TuningSelector extends React.Component{
   
       var totalDropdowns = allNotes.map((elements,index)=>
         <>
-        <select value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
+        <select class={this.props.activeTunings[index]} value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
           {elements}
         </select>
-        <input type="checkbox"></input></>
+        <input type="checkbox"></input>
+        </>
       )
   
       return(
