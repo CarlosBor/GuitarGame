@@ -10,7 +10,7 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
-      activeTunings:[true,true,true,true,true,true,true,true,true]
+      activeWires:[true,true,true,true,true,true,true,true,true]
     };
   }
 
@@ -33,6 +33,7 @@ class Game extends React.Component {
       numberOfFrets = {this.state.fretNumber}
       numberOfWires = {this.state.wireNumber}
       currentTuning = {this.state.tuning}
+      activeWires = {this.state.activeWires}
     />
   }
 
@@ -42,7 +43,8 @@ class Game extends React.Component {
       currentTuning = {this.state.tuning}
       tuningChange={this.tuningChange}
       stringNumberChange={this.stringNumberChange}
-      activeTunings = {this.state.activeTunings}
+      activeWires = {this.state.activeWires}
+      activeWiresChange = {this.activeWiresChange}
     />
   }
   /* React.Component doesn't auto bind methods to itself. You need to bind them yourself */
@@ -67,22 +69,28 @@ class Game extends React.Component {
     })
   }
   activeWiresChange = event => {
-   // var newActiveWires = 
+    var newActiveWires = this.state.activeWires.concat();
+    newActiveWires[event.target.class] = event.target.checked;
+    this.setState({
+      activeWires : newActiveWires
+    })
+
   }
 }
 
 class Board extends React.Component{
-  renderWire(numberOfFrets, wireTuning){
+  renderWire(numberOfFrets, wireTuning,activeWires){
     var notesUsed = [];
     var fretNodes = [];
     for (var i=0;i<numberOfFrets;i++){
       notesUsed[i] = calculateNote(wireTuning,i);
+      var visibilityClass = activeWires[i] ? "visible" : "hidden";
     }
     fretNodes = notesUsed.map((note) =>
       <div class="fret" value={note}>{note}</div>
     );
     return(
-      <div class="wire">
+      <div className = {"wire "+ visibilityClass} >
         {fretNodes}
       </div>
     )
@@ -91,7 +99,7 @@ class Board extends React.Component{
   renderBoard(numberOfFrets, numberOfWires, tuning){
     var wires = [];
     for (var i=0;i<numberOfWires;i++){
-      wires[i] = this.renderWire(numberOfFrets,tuning[i]);
+      wires[i] = this.renderWire(numberOfFrets,tuning[i],this.props.activeWires);
     }
     return(
      <>{wires}</>
@@ -117,7 +125,7 @@ class Options extends React.Component{
           wireNumber = {this.props.wireNumber}
           tuningChange = {this.props.tuningChange}
           currentTuning = {this.props.currentTuning}
-          activeTunings = {this.props.activeTunings}
+          activeWires = {this.props.activeWires}
         />
         <StringNumberSelector
           stringNumberChange = {this.props.stringNumberChange}
@@ -136,13 +144,12 @@ class TuningSelector extends React.Component{
          <option value = {i+","+notes}>{notes}</option>
         )
       }
-  
       var totalDropdowns = allNotes.map((elements,index)=>
         <>
-        <select class={this.props.activeTunings[index]} value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
+        <select className={this.props.activeWires[index] ? "visible" : "hidden"} value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
           {elements}
         </select>
-        <input type="checkbox"></input>
+        <input type="checkbox" className={index} onChange={this.props.visibilityChange}></input>
         </>
       )
   
