@@ -58,8 +58,7 @@ class Game extends React.Component {
     newTuning[target] = tunedNote;
     this.setState({
         tuning : newTuning
-      }
-    )
+    })
   }
 
   stringNumberChange = event => {
@@ -68,23 +67,23 @@ class Game extends React.Component {
       wireNumber : newWireNumber
     })
   }
+
   activeWiresChange = event => {
     var newActiveWires = this.state.activeWires.concat();
-    newActiveWires[event.target.class] = event.target.checked;
+    newActiveWires[event.target.className] = event.target.checked;
     this.setState({
       activeWires : newActiveWires
     })
-
   }
 }
 
 class Board extends React.Component{
-  renderWire(numberOfFrets, wireTuning,activeWires){
+  renderWire(numberOfFrets, wireTuning,activeToggle){
+    var visibilityClass = activeToggle ? "visible" : "hidden";
     var notesUsed = [];
     var fretNodes = [];
     for (var i=0;i<numberOfFrets;i++){
       notesUsed[i] = calculateNote(wireTuning,i);
-      var visibilityClass = activeWires[i] ? "visible" : "hidden";
     }
     fretNodes = notesUsed.map((note) =>
       <div class="fret" value={note}>{note}</div>
@@ -99,7 +98,7 @@ class Board extends React.Component{
   renderBoard(numberOfFrets, numberOfWires, tuning){
     var wires = [];
     for (var i=0;i<numberOfWires;i++){
-      wires[i] = this.renderWire(numberOfFrets,tuning[i],this.props.activeWires);
+      wires[i] = this.renderWire(numberOfFrets,tuning[i],this.props.activeWires[i]);
     }
     return(
      <>{wires}</>
@@ -126,6 +125,7 @@ class Options extends React.Component{
           tuningChange = {this.props.tuningChange}
           currentTuning = {this.props.currentTuning}
           activeWires = {this.props.activeWires}
+          activeWiresChange = {this.props.activeWiresChange}
         />
         <StringNumberSelector
           stringNumberChange = {this.props.stringNumberChange}
@@ -149,7 +149,7 @@ class TuningSelector extends React.Component{
         <select className={this.props.activeWires[index] ? "visible" : "hidden"} value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
           {elements}
         </select>
-        <input type="checkbox" className={index} onChange={this.props.visibilityChange}></input>
+        <input type="checkbox" defaultChecked="true" className={index} onChange={this.props.activeWiresChange}></input>
         </>
       )
   
