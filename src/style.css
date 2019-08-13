@@ -61,3 +61,7 @@
     opacity:0.3;
     pointer-events:none;
 }
+
+.questionNode{
+    background-color:yellow;
+}
