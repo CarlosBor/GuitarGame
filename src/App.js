@@ -21,9 +21,11 @@ class Game extends React.Component {
               {this.renderBoard()}
           </div>
           <div class="options">
-              {this.renderOptions()}
+             {this.renderOptions()}
           </div>
-          <div class="score"></div>
+          <div class="score">
+
+          </div>
       </div>
     );
   }
