@@ -10,7 +10,8 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
-      activeWires:[true,true,true,true,true,true,true,true,true]
+      activeWires:[true,true,true,true,true,true,true,true,true],
+      currentQuestion:null
     };
   }
 
@@ -47,6 +48,7 @@ class Game extends React.Component {
       stringNumberChange={this.stringNumberChange}
       activeWires = {this.state.activeWires}
       activeWiresChange = {this.activeWiresChange}
+      currentQuestionChange = {this.currentQuestionChange}
     />
   }
 
@@ -78,6 +80,13 @@ class Game extends React.Component {
       activeWires : newActiveWires
     })
   }
+
+  currentQuestionChange(question){
+    this.setState({
+      currentQuestion : question
+    })
+  }
+
 }
 
 class Board extends React.Component{
@@ -134,7 +143,7 @@ class Options extends React.Component{
           stringNumberChange = {this.props.stringNumberChange}
         />
         <GameStartButtons
-
+          currentQuestionChange = {this.props.currentQuestionChange}
         />
       </>
       )
@@ -215,11 +224,11 @@ class GameStartButtons extends React.Component{
     var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
     randomFret.removeEventListener("click", lose);
     randomFret.addEventListener("click", gain);
-    //Fire a function here to set a variable in state to the "question"    
+    //Fire a function here to set a variable in state to the "question"
     console.log(randomFret.getAttribute("note"))
     randomFret.classList.add('questionNode');
+    
   }
-
 
 }
 
