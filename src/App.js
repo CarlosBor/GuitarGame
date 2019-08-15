@@ -67,7 +67,7 @@ class Game extends React.Component {
   }
 
   stringNumberChange = event => {
-    var newWireNumber = event.target.value;
+    var newWireNumber = parseInt(event.target.value);
     this.setState({
       wireNumber : newWireNumber
     })
@@ -81,7 +81,7 @@ class Game extends React.Component {
     })
   }
 
-  currentQuestionChange(question){
+  currentQuestionChange(question) => {
     this.setState({
       currentQuestion : question
     })
@@ -206,6 +206,7 @@ class GameStartButtons extends React.Component{
   //Success or failure changes score, generates another prompt
   //When time runs out prompt disappears, score is logged, things return to normal
   render(){
+    this.props.currentQuestionChange("cosa");
     return(
       <>
       <input type="button" value="Keepo" onClick={this.selectRandomFret}/>
