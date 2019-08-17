@@ -11,7 +11,8 @@ class Game extends React.Component {
       wireNumber:6,
       fretNumber:12,
       activeWires:[true,true,true,true,true,true,true,true,true],
-      currentQuestion: null
+      currentQuestion: null,
+      currentScore: null
       };
   }
 
@@ -20,6 +21,7 @@ class Game extends React.Component {
       <div class="game">
           <div class="board">
             <div class="question">{this.state.currentQuestion}</div>
+            <div class="scores">{this.state.currentScore}</div>
               {this.renderBoard()}
           </div>
           <div class="options">
@@ -49,6 +51,8 @@ class Game extends React.Component {
       activeWires = {this.state.activeWires}
       activeWiresChange = {this.activeWiresChange}
       currentQuestionChange = {this.currentQuestionChange}
+      winScore = {this.winScore}
+      loseScore = {this.loseScore}
     />
   }
 
@@ -84,6 +88,19 @@ class Game extends React.Component {
   currentQuestionChange = (question) => {
     this.setState({
       currentQuestion : question
+    })
+  }
+
+  winScore = () =>{
+    var newScore = this.state.currentScore + 100;
+    this.setState({
+      currentScore : newScore
+    })
+  }
+  loseScore = () =>{
+    var newScore = this.state.currentScore - 100;
+    this.setState({
+      currentScore : newScore
     })
   }
 
@@ -145,6 +162,8 @@ class Options extends React.Component{
         />
         <GameStartButtons
           currentQuestionChange = {this.props.currentQuestionChange}
+          winScore = {this.props.winScore}
+          loseScore = {this.props.loseScore}
         />
       </>
       )
@@ -203,26 +222,29 @@ class GameStartButtons extends React.Component{
     super(props);
     this.currentQuestionChange = this.props.currentQuestionChange.bind(this);
     this.selectRandomFret = this.selectRandomFret.bind(this);
+    this.loseScore = this.props.loseScore.bind(this);
+    this.winScore = this.props.winScore.bind(this);
   }
 
   selectRandomFret(){//Selects a random fret from those active, sets the "question" (sets a note in one mode, fret and wire on the other)
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
     //Have to make each fret clickable, all but one should skip and cause loss of points
     for (var i=0;i<activeFrets.length;i++){
-      activeFrets[i].addEventListener("click", lose);
+      activeFrets[i].addEventListener("click", this.loseScore);
     }
     //Generates a random number between 0 and the count of active frets.
     var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
-    randomFret.removeEventListener("click", lose);
-    randomFret.addEventListener("click", this.currentQuestionChange(randomFret.getAttribute("note")));
+    randomFret.removeEventListener("click", this.loseScore);
+    randomFret.addEventListener("click", this.winScore);
     //Fire a function here to set a variable in state to the "question"
-    console.log(randomFret.getAttribute("note"))
+    this.currentQuestionChange(randomFret.getAttribute("note"))
     randomFret.classList.add('questionNode');
+    
     
   }
   
 
-  //Two buttons, one for find note in string, other for identify marked note.
+  //Two buttons, one for finding note in string, other for identifying marked note.
   //Should fire two different functions ¿? Each doing its own thing, ultimately writing into Scores
   //Game Start
   //Option menu is locked
@@ -266,14 +288,5 @@ function findNote(note){
         console.log("Note not found in circle");
     }
     return noteIndex
-}
-
-//Testing
-function lose(){
-  alert("oh no");
-}
-
-function gain(){
-  alert("Oh yay");
 }
 export default Game;
