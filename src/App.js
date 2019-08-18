@@ -224,25 +224,43 @@ class GameStartButtons extends React.Component{
     this.selectRandomFret = this.selectRandomFret.bind(this);
     this.loseScore = this.props.loseScore.bind(this);
     this.winScore = this.props.winScore.bind(this);
+    this.selectQuestionFret = this.selectQuestionFret.bind(this);
+    this.chooseNextFret = this.chooseNextFret.bind(this);
+    this.selectRandomFret = this.selectRandomFret.bind(this);
   }
 
-  selectRandomFret(){//Selects a random fret from those active, sets the "question" (sets a note in one mode, fret and wire on the other)
+  selectQuestionFret(){//Selects a random fret from those active, sets the "question" (sets a note in one mode, fret and wire on the other)
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
     //Have to make each fret clickable, all but one should skip and cause loss of points
+    var randomFret = null;
     for (var i=0;i<activeFrets.length;i++){
       activeFrets[i].addEventListener("click", this.loseScore);
+      activeFrets[i].addEventListener("click", (function(){this.chooseNextFret(activeFrets)}));
     }
-    //Generates a random number between 0 and the count of active frets.
-    var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
-    randomFret.removeEventListener("click", this.loseScore);
-    randomFret.addEventListener("click", this.winScore);
+    randomFret = this.chooseNextFret(activeFrets,randomFret);
     //Fire a function here to set a variable in state to the "question"
     this.currentQuestionChange(randomFret.getAttribute("note"))
-    randomFret.classList.add('questionNode');
-    
-    
+    randomFret.classList.add('questionNode'); 
+  }
+  chooseNextFret(activeFrets){
+    var questionFret = null;
+    if (document.querySelector("questionNode") != null){
+      questionFret = document.querySelector("questionNode");
+      questionFret.removeEventListener("click", this.winScore);
+      questionFret.addEventListener("click", this.loseScore);
+    }
+    var newRandomFret = this.selectRandomFret(activeFrets);
+    newRandomFret.removeEventListener("click", this.loseScore);
+    newRandomFret.addEventListener("click", this.winScore);
+    if (questionFret) questionFret.classList.remove("questionNode");
+    newRandomFret.classList.add("questionNode");
+    this.currentQuestionChange(newRandomFret.getAttribute("note"))
+    return newRandomFret;
   }
   
+  selectRandomFret(activeFrets){
+    return activeFrets[Math.floor(Math.random() * activeFrets.length)];
+  }
 
   //Two buttons, one for finding note in string, other for identifying marked note.
   //Should fire two different functions ¿? Each doing its own thing, ultimately writing into Scores
@@ -257,7 +275,7 @@ class GameStartButtons extends React.Component{
   render(){
     return(
       <>
-      <input type="button" value="Keepo" onClick={this.selectRandomFret}/>
+      <input type="button" value="Keepo" onClick={this.selectQuestionFret}/>
       <input type="button" value={this.props.currentQuestionChange}/>
       </>
     )
