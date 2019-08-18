@@ -53,6 +53,7 @@ class Game extends React.Component {
       currentQuestionChange = {this.currentQuestionChange}
       winScore = {this.winScore}
       loseScore = {this.loseScore}
+      currentQuestion = {this.state.currentQuestion}
     />
   }
 
@@ -93,12 +94,14 @@ class Game extends React.Component {
 
   winScore = () =>{
     var newScore = this.state.currentScore + 100;
+    console.log("Win");
     this.setState({
       currentScore : newScore
     })
   }
   loseScore = () =>{
     var newScore = this.state.currentScore - 100;
+    console.log("Lose");
     this.setState({
       currentScore : newScore
     })
@@ -162,6 +165,7 @@ class Options extends React.Component{
         />
         <GameStartButtons
           currentQuestionChange = {this.props.currentQuestionChange}
+          currentQuestion = {this.props.currentQuestion}
           winScore = {this.props.winScore}
           loseScore = {this.props.loseScore}
         />
@@ -229,29 +233,32 @@ class GameStartButtons extends React.Component{
     this.selectRandomFret = this.selectRandomFret.bind(this);
   }
 
-  selectQuestionFret(){//Selects a random fret from those active, sets the "question" (sets a note in one mode, fret and wire on the other)
+  selectQuestionFret(){//Function that actually fires from the button press
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
-    //Have to make each fret clickable, all but one should skip and cause loss of points
-    var randomFret = null;
     for (var i=0;i<activeFrets.length;i++){
-      activeFrets[i].addEventListener("click", this.loseScore);
-      activeFrets[i].addEventListener("click", (function(){this.chooseNextFret(activeFrets)}));
+      activeFrets[i].addEventListener("click", function (event){this.chooseNextFret(activeFrets,event)}.bind(this));
     }
-    randomFret = this.chooseNextFret(activeFrets,randomFret);
-    //Fire a function here to set a variable in state to the "question"
-    this.currentQuestionChange(randomFret.getAttribute("note"))
+    //Initial question fret
+    var randomFret = this.chooseNextFret(activeFrets, null);
+    //CSS class for testing
     randomFret.classList.add('questionNode'); 
   }
-  chooseNextFret(activeFrets){
+
+  chooseNextFret(activeFrets,event){
     var questionFret = null;
-    if (document.querySelector("questionNode") != null){
-      questionFret = document.querySelector("questionNode");
-      questionFret.removeEventListener("click", this.winScore);
-      questionFret.addEventListener("click", this.loseScore);
+    //When firing this event from a fret click, handle success and failure.
+    if (event != null){
+      if (event.target.getAttribute("note") == this.props.currentQuestion){
+        this.winScore();
+      }else{
+        this.loseScore();
+      }
+    }
+    //CSS class for testing
+    if (document.querySelector(".questionNode") != null){
+      questionFret = document.querySelector(".questionNode");
     }
     var newRandomFret = this.selectRandomFret(activeFrets);
-    newRandomFret.removeEventListener("click", this.loseScore);
-    newRandomFret.addEventListener("click", this.winScore);
     if (questionFret) questionFret.classList.remove("questionNode");
     newRandomFret.classList.add("questionNode");
     this.currentQuestionChange(newRandomFret.getAttribute("note"))
