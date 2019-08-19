@@ -10,6 +10,7 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
+      timeRemaining : 45,
       activeWires:[true,true,true,true,true,true,true,true,true],
       currentQuestion: null,
       currentScore: null
@@ -22,6 +23,7 @@ class Game extends React.Component {
           <div class="board">
             <div class="question">{this.state.currentQuestion}</div>
             <div class="scores">{this.state.currentScore}</div>
+            <div class="timeRemaining">{this.state.timeRemaining}</div>
               {this.renderBoard()}
           </div>
           <div class="options">
@@ -54,6 +56,8 @@ class Game extends React.Component {
       winScore = {this.winScore}
       loseScore = {this.loseScore}
       currentQuestion = {this.state.currentQuestion}
+      timeRemainingChange = {this.timeRemainingChange}
+      timePass = {this.timePass}
     />
   }
 
@@ -85,11 +89,37 @@ class Game extends React.Component {
       activeWires : newActiveWires
     })
   }
-
+  
+  timeRemainingChange = event =>{
+    var newTimeRemaining = parseInt(event.target.value);
+    this.setState({
+      timeRemaining : newTimeRemaining
+    })
+  }
   currentQuestionChange = (question) => {
     this.setState({
       currentQuestion : question
     })
+  }
+
+  timeRemainingSet = (time) => {
+    this.setState({
+      timeRemaining : time
+    })
+  }
+
+  timePass = async () => {
+    console.log("Game Start");
+    while(this.state.timeRemaining > 0){
+      await this.sleep(1000);
+      this.timeRemainingSet(this.state.timeRemaining-1);
+      console.log("Time tick");
+    }
+      console.log("Time end");
+  }
+
+  sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   winScore = () =>{
@@ -149,7 +179,6 @@ class Board extends React.Component{
 }
 
 class Options extends React.Component{
-
   render(){
     return (
       <>
@@ -168,6 +197,10 @@ class Options extends React.Component{
           currentQuestion = {this.props.currentQuestion}
           winScore = {this.props.winScore}
           loseScore = {this.props.loseScore}
+          timePass = {this.props.timePass}
+        />
+        <TimeSelector
+          timeRemainingChange = {this.props.timeRemainingChange}
         />
       </>
       )
@@ -200,7 +233,6 @@ class TuningSelector extends React.Component{
       )
     }
 
-
     render(){
       return(
         <>
@@ -208,7 +240,6 @@ class TuningSelector extends React.Component{
         </>
       )
     }
-
 }
 
 class StringNumberSelector extends React.Component{
@@ -231,6 +262,7 @@ class GameStartButtons extends React.Component{
     this.selectQuestionFret = this.selectQuestionFret.bind(this);
     this.chooseNextFret = this.chooseNextFret.bind(this);
     this.selectRandomFret = this.selectRandomFret.bind(this);
+    this.timePass = this.props.timePass.bind(this);
   }
 
   selectQuestionFret(){//Function that actually fires from the button press
@@ -283,11 +315,29 @@ class GameStartButtons extends React.Component{
     return(
       <>
       <input type="button" value="Keepo" onClick={this.selectQuestionFret}/>
-      <input type="button" value={this.props.currentQuestionChange}/>
+      <input type="button" value="Hm" onClick={this.timePass}/>
       </>
     )
   }
 
+}
+
+class TimeSelector extends React.Component{
+
+  render(){
+    return(
+      <>
+      <select onChange={this.props.timeRemainingChange}>
+        <option value="30">30</option>
+        <option value="45">45</option>
+        <option value="60" selected>60</option>
+        <option value="90">90</option>
+        <option value="120">120</option>
+      </select>
+      <span>Seconds</span>
+      </>
+    )
+  }
 }
 
 const noteCircle = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
