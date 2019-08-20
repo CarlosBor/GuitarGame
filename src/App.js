@@ -10,7 +10,7 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
-      timeRemaining : 45,
+      timeRemaining : 2,
       activeWires:[true,true,true,true,true,true,true,true,true],
       currentQuestion: null,
       currentScore: null
@@ -110,17 +110,25 @@ class Game extends React.Component {
 ////////TODO: Have to associate the ending of the countdown to redrawing the board, saving the score and enabling the option menu.
   timePass = async () => {
     console.log("Game Start");
+    var optionNodes = document.querySelector(".options").querySelectorAll("select, input");
+    disableNodes(optionNodes);
     while(this.state.timeRemaining > 0){
       await this.sleep(1000);
       this.timeRemainingSet(this.state.timeRemaining-1);
       console.log("Time tick");
     }
       console.log("Time end");
+      reloadNodes(document.querySelector("div.board"));
+      document.querySelector(".questionNode").classList.remove("questionNode");
+      enableNodes(optionNodes);
+      //saveScore();
+
   }
 
   sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
 /////////
   winScore = () =>{
     var newScore = this.state.currentScore + 100;
@@ -370,4 +378,15 @@ function reloadNodes(oldNodes){
   oldNodes.parentNode.replaceChild(newNodes, oldNodes);
 }
 
+function disableNodes(nodes){
+  for(var i=0;i<nodes.length;i++){
+    nodes[i].setAttribute("disabled", "disabled");
+  }
+}
+
+function enableNodes(nodes){
+  for(var i=0;i<nodes.length;i++){
+    nodes[i].removeAttribute("disabled");
+  }
+}
 export default Game;
