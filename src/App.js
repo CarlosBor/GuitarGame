@@ -107,7 +107,7 @@ class Game extends React.Component {
       timeRemaining : time
     })
   }
-
+////////TODO: Have to associate the ending of the countdown to redrawing the board, saving the score and enabling the option menu.
   timePass = async () => {
     console.log("Game Start");
     while(this.state.timeRemaining > 0){
@@ -121,7 +121,7 @@ class Game extends React.Component {
   sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
+/////////
   winScore = () =>{
     var newScore = this.state.currentScore + 100;
     console.log("Win");
@@ -364,4 +364,10 @@ function findNote(note){
     }
     return noteIndex
 }
+
+function reloadNodes(oldNodes){
+  var newNodes = oldNodes.cloneNode(true);
+  oldNodes.parentNode.replaceChild(newNodes, oldNodes);
+}
+
 export default Game;
