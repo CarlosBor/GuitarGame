@@ -118,7 +118,7 @@ class Game extends React.Component {
       console.log("Time tick");
     }
       console.log("Time end");
-      reloadNodes(document.querySelector("div.board"));
+      reloadNodes(document.querySelector("div.fretBoard"));
       document.querySelector(".questionNode").classList.remove("questionNode");
       enableNodes(optionNodes);
       //saveScore();
@@ -274,6 +274,7 @@ class GameStartButtons extends React.Component{
   }
 
   selectQuestionFret(){//Function that actually fires from the button press
+    console.log("Yes I've fired");
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
     for (var i=0;i<activeFrets.length;i++){
       activeFrets[i].addEventListener("click", function (event){this.chooseNextFret(activeFrets,event)}.bind(this));
@@ -287,11 +288,15 @@ class GameStartButtons extends React.Component{
   chooseNextFret(activeFrets,event){
     var questionFret = null;
     //When firing this event from a fret click, handle success and failure.
+    console.log(event);
     if (event != null){
+      console.log("This happens");
       if (event.target.getAttribute("note") == this.props.currentQuestion){
         this.winScore();
+        console.log("And wins");
       }else{
         this.loseScore();
+        console.log("And loses");
       }
     }
     //CSS class for testing
