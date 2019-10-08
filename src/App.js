@@ -271,12 +271,16 @@ class GameStartButtons extends React.Component{
     this.chooseNextFret = this.chooseNextFret.bind(this);
     this.selectRandomFret = this.selectRandomFret.bind(this);
     this.timePass = this.props.timePass.bind(this);
+
+    //Explorar esta opcion
+    this.clickFn = this.chooseNextFret.bind(this);
   }
 
   selectQuestionFret(){//Function that actually fires from the button press
     console.log("Yes I've fired");
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
     for (var i=0;i<activeFrets.length;i++){
+      console.log(activeFrets[i].getAttribute("note"));
       activeFrets[i].addEventListener("click", function (event){this.chooseNextFret(activeFrets,event)}.bind(this));
     }
     //Initial question fret
