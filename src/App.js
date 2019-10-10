@@ -129,7 +129,6 @@ class Game extends React.Component {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-/////////
   winScore = () =>{
     var newScore = this.state.currentScore + 100;
     console.log("Win");
@@ -272,30 +271,31 @@ class GameStartButtons extends React.Component{
     this.selectRandomFret = this.selectRandomFret.bind(this);
     this.timePass = this.props.timePass.bind(this);
 
-    //Explorar esta opcion
+    //Explorar esta opcion, hacer que la funcion se asigne con la informacion de la nota en lugar de usar event y target para poder resasignar la funcion al nodo a voluntad
     this.clickFn = this.chooseNextFret.bind(this);
   }
 
   selectQuestionFret(){//Function that actually fires from the button press
     console.log("Yes I've fired");
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
+        //Initial question fret
+        var randomFret = this.chooseNextFret(activeFrets, null);
     for (var i=0;i<activeFrets.length;i++){
-      console.log(activeFrets[i].getAttribute("note"));
-      activeFrets[i].addEventListener("click", function (event){this.chooseNextFret(activeFrets,event)}.bind(this));
+      //console.log(activeFrets[i].getAttribute("note"));
+  //Por que se envia un evento del raton en lugar de la nota????????????
+      activeFrets[i].addEventListener("click", this.clickFn.bind(null, activeFrets,activeFrets[i].getAttribute("note")));
     }
-    //Initial question fret
-    var randomFret = this.chooseNextFret(activeFrets, null);
     //CSS class for testing
     randomFret.classList.add('questionNode'); 
   }
 
-  chooseNextFret(activeFrets,event){
+
+  chooseNextFret(activeFrets,note){
+    console.log(note);
     var questionFret = null;
     //When firing this event from a fret click, handle success and failure.
-    console.log(event);
-    if (event != null){
-      console.log("This happens");
-      if (event.target.getAttribute("note") == this.props.currentQuestion){
+    if (note != null){
+      if ( note == this.props.currentQuestion){
         this.winScore();
         console.log("And wins");
       }else{
@@ -306,9 +306,16 @@ class GameStartButtons extends React.Component{
     //CSS class for testing
     if (document.querySelector(".questionNode") != null){
       questionFret = document.querySelector(".questionNode");
+      console.log("El anterior era: ");
+      console.log(questionFret);
     }
     var newRandomFret = this.selectRandomFret(activeFrets);
-    if (questionFret) questionFret.classList.remove("questionNode");
+    console.log("el random es:");
+    console.log(newRandomFret);
+    if (questionFret){
+      console.log("Does this thing work");
+      questionFret.classList.remove("questionNode");
+    } 
     newRandomFret.classList.add("questionNode");
     this.currentQuestionChange(newRandomFret.getAttribute("note"))
     return newRandomFret;
