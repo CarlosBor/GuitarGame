@@ -41,6 +41,7 @@ class Game extends React.Component {
       numberOfWires = {this.state.wireNumber}
       currentTuning = {this.state.tuning}
       activeWires = {this.state.activeWires}
+      checkAnswer = {this.checkAnswer}
     />
   }
 
@@ -129,6 +130,23 @@ class Game extends React.Component {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  checkAnswer = event => {
+    console.log(event.target);
+    console.log(event.target.getAttribute("note"));
+    console.log(this.state.currentQuestion);
+    console.log(document.querySelector(".questionNode"));
+    if(event.target.getAttribute("note") == this.state.currentQuestion){
+      console.log("YES");
+    }else{
+      console.log("NO");
+    }
+    document.querySelector(".questionNode").classList.remove("questionNode");
+    var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
+    var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
+    randomFret.classList.add('questionNode');
+    this.currentQuestionChange(randomFret.getAttribute("note"));
+  }
+
   winScore = () =>{
     var newScore = this.state.currentScore + 100;
     console.log("Win");
@@ -147,15 +165,21 @@ class Game extends React.Component {
 }
 
 class Board extends React.Component{
+  constructor(props){
+    super(props);
+    this.checkAnswer = this.props.checkAnswer;
+  }
+
   renderWire(numberOfFrets, wireTuning, activeToggle, wireNumber){
     var visibilityClass = activeToggle ? "visible" : "hidden";
     var notesUsed = [];
     var fretNodes = [];
+
     for (var i=0;i<numberOfFrets;i++){
       notesUsed[i] = calculateNote(wireTuning,i);
     }
     fretNodes = notesUsed.map((note) =>
-      <div class="fret" note={note+" "+wireNumber}>{note}</div>
+      <div class="fret" note={note+" "+wireNumber} onClick={this.checkAnswer}>{note}</div>
     );
     return(
       <div className = {"wire "+ visibilityClass} >
@@ -275,55 +299,16 @@ class GameStartButtons extends React.Component{
     this.clickFn = this.chooseNextFret.bind(this);
   }
 
+  //Rewrite as a function in the master class, so checking of answers goes with it.
   selectQuestionFret(){//Function that actually fires from the button press
-    console.log("Yes I've fired");
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
         //Initial question fret
-        var randomFret = this.chooseNextFret(activeFrets, null);
+        var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
+        randomFret.classList.add('questionNode');
+        this.currentQuestionChange(randomFret.getAttribute("note"));
     for (var i=0;i<activeFrets.length;i++){
-      //console.log(activeFrets[i].getAttribute("note"));
-  //Por que se envia un evento del raton en lugar de la nota????????????
-      var removeFunction = this.clickFn.bind(null, activeFrets,activeFrets[i].getAttribute("note"));
-      console.log(removeFunction.toString())
-      console.log(removeFunction);
-      activeFrets[i].addEventListener("click", removeFunction);
+      activeFrets[i].className += " inGame";
     }
-    //CSS class for testing
-    randomFret.classList.add('questionNode'); 
-    console.log(document.querySelector(".fret"));
-    document.querySelector(".fret").removeEventListener("click",removeFunction);
-  }
-
-
-  chooseNextFret(activeFrets,note){
-    console.log(note);
-    var questionFret = null;
-    //When firing this event from a fret click, handle success and failure.
-    if (note != null){
-      if ( note == this.props.currentQuestion){
-        this.winScore();
-        console.log("And wins");
-      }else{
-        this.loseScore();
-        console.log("And loses");
-      }
-    }
-    //CSS class for testing
-    if (document.querySelector(".questionNode") != null){
-      questionFret = document.querySelector(".questionNode");
-      console.log("El anterior era: ");
-      console.log(questionFret);
-    }
-    var newRandomFret = this.selectRandomFret(activeFrets);
-    console.log("el random es:");
-    console.log(newRandomFret);
-    if (questionFret){
-      console.log("Does this thing work");
-      questionFret.classList.remove("questionNode");
-    } 
-    newRandomFret.classList.add("questionNode");
-    this.currentQuestionChange(newRandomFret.getAttribute("note"))
-    return newRandomFret;
   }
   
   selectRandomFret(activeFrets){
