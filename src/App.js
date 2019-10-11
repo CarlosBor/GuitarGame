@@ -283,10 +283,15 @@ class GameStartButtons extends React.Component{
     for (var i=0;i<activeFrets.length;i++){
       //console.log(activeFrets[i].getAttribute("note"));
   //Por que se envia un evento del raton en lugar de la nota????????????
-      activeFrets[i].addEventListener("click", this.clickFn.bind(null, activeFrets,activeFrets[i].getAttribute("note")));
+      var removeFunction = this.clickFn.bind(null, activeFrets,activeFrets[i].getAttribute("note"));
+      console.log(removeFunction.toString())
+      console.log(removeFunction);
+      activeFrets[i].addEventListener("click", removeFunction);
     }
     //CSS class for testing
     randomFret.classList.add('questionNode'); 
+    console.log(document.querySelector(".fret"));
+    document.querySelector(".fret").removeEventListener("click",removeFunction);
   }
 
 
