@@ -22,14 +22,14 @@ class Game extends React.Component {
       <div class="game">
           <div class="board">
             <div class="question">{this.state.currentQuestion}</div>
-            <div class="scores">{this.state.currentScore}</div>
+            <div class="score">{this.state.currentScore}</div>
             <div class="timeRemaining">{this.state.timeRemaining}</div>
               {this.renderBoard()}
           </div>
           <div class="options">
              {this.renderOptions()}
           </div>
-          <div class="score">
+          <div class="scores">
           </div>
       </div>
     );
@@ -56,6 +56,7 @@ class Game extends React.Component {
       currentQuestionChange = {this.currentQuestionChange}
       winScore = {this.winScore}
       loseScore = {this.loseScore}
+      selectQuestionFret = {this.selectQuestionFret}
       currentQuestion = {this.state.currentQuestion}
       timeRemainingChange = {this.timeRemainingChange}
       timePass = {this.timePass}
@@ -108,8 +109,10 @@ class Game extends React.Component {
       timeRemaining : time
     })
   }
-////////TODO: Have to associate the ending of the countdown to redrawing the board, saving the score and enabling the option menu.
+  
+////////TODO: Have to associate the ending of the countdown to saving the score
   timePass = async () => {
+    var totalTime = this.state.timeRemaining;
     console.log("Game Start");
     var optionNodes = document.querySelector(".options").querySelectorAll("select, input");
     disableNodes(optionNodes);
@@ -119,11 +122,15 @@ class Game extends React.Component {
       console.log("Time tick");
     }
       console.log("Time end");
-      reloadNodes(document.querySelector("div.fretBoard"));
+      var fretNumber = document.querySelectorAll(".inGame").length;
+      console.log(fretNumber);
       document.querySelector(".questionNode").classList.remove("questionNode");
+      var inGameNodes = document.querySelectorAll(".inGame");
+      for (var i=0;i<inGameNodes.length;i++){
+        inGameNodes[i].classList.remove("inGame");
+      }
       enableNodes(optionNodes);
-      //saveScore();
-
+      this.saveScore(fretNumber,totalTime);
   }
 
   sleep = (ms) => {
@@ -131,20 +138,27 @@ class Game extends React.Component {
   }
 
   checkAnswer = event => {
-    console.log(event.target);
-    console.log(event.target.getAttribute("note"));
-    console.log(this.state.currentQuestion);
-    console.log(document.querySelector(".questionNode"));
+    if (!event.target.classList.contains("inGame")){
+     return
+    }
     if(event.target.getAttribute("note") == this.state.currentQuestion){
-      console.log("YES");
+     this.winScore();
     }else{
-      console.log("NO");
+      this.loseScore();
     }
     document.querySelector(".questionNode").classList.remove("questionNode");
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
     var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
     randomFret.classList.add('questionNode');
     this.currentQuestionChange(randomFret.getAttribute("note"));
+  }
+
+  selectQuestionFret = () =>{
+    var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
+        //Initial question fret
+        var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
+        randomFret.classList.add('questionNode');
+        this.currentQuestionChange(randomFret.getAttribute("note"));
   }
 
   winScore = () =>{
@@ -160,6 +174,11 @@ class Game extends React.Component {
     this.setState({
       currentScore : newScore
     })
+  }
+  saveScore = (fretNumber, totalTime) =>{
+    var points = parseInt(document.querySelector(".score").innerHTML) || 0;
+    setScoreLocal("findFret",points,fretNumber,totalTime);
+    console.log(getScoreLocal("findFret"));
   }
 
 }
@@ -229,6 +248,7 @@ class Options extends React.Component{
           winScore = {this.props.winScore}
           loseScore = {this.props.loseScore}
           timePass = {this.props.timePass}
+          selectQuestionFret = {this.props.selectQuestionFret}
         />
         <TimeSelector
           timeRemainingChange = {this.props.timeRemainingChange}
@@ -286,33 +306,18 @@ class StringNumberSelector extends React.Component{
 class GameStartButtons extends React.Component{
   constructor(props){
     super(props);
-    this.currentQuestionChange = this.props.currentQuestionChange.bind(this);
-    this.selectRandomFret = this.selectRandomFret.bind(this);
-    this.loseScore = this.props.loseScore.bind(this);
-    this.winScore = this.props.winScore.bind(this);
-    this.selectQuestionFret = this.selectQuestionFret.bind(this);
-    this.chooseNextFret = this.chooseNextFret.bind(this);
-    this.selectRandomFret = this.selectRandomFret.bind(this);
+    this.selectQuestionFretStart = this.selectQuestionFretStart.bind(this);
     this.timePass = this.props.timePass.bind(this);
-
-    //Explorar esta opcion, hacer que la funcion se asigne con la informacion de la nota en lugar de usar event y target para poder resasignar la funcion al nodo a voluntad
-    this.clickFn = this.chooseNextFret.bind(this);
+    this.selectQuestionFret = this.props.selectQuestionFret;
   }
 
-  //Rewrite as a function in the master class, so checking of answers goes with it.
-  selectQuestionFret(){//Function that actually fires from the button press
+  selectQuestionFretStart(){//Function that actually fires from the button press
+    this.selectQuestionFret();
+    this.timePass();
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
-        //Initial question fret
-        var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
-        randomFret.classList.add('questionNode');
-        this.currentQuestionChange(randomFret.getAttribute("note"));
     for (var i=0;i<activeFrets.length;i++){
       activeFrets[i].className += " inGame";
     }
-  }
-  
-  selectRandomFret(activeFrets){
-    return activeFrets[Math.floor(Math.random() * activeFrets.length)];
   }
 
   //Two buttons, one for finding note in string, other for identifying marked note.
@@ -328,7 +333,7 @@ class GameStartButtons extends React.Component{
   render(){
     return(
       <>
-      <input type="button" value="Keepo" onClick={this.selectQuestionFret}/>
+      <input type="button" value="Keepo" onClick={this.selectQuestionFretStart}/>
       <input type="button" value="Hm" onClick={this.timePass}/>
       </>
     )
@@ -379,11 +384,6 @@ function findNote(note){
     return noteIndex
 }
 
-function reloadNodes(oldNodes){
-  var newNodes = oldNodes.cloneNode(true);
-  oldNodes.parentNode.replaceChild(newNodes, oldNodes);
-}
-
 function disableNodes(nodes){
   for(var i=0;i<nodes.length;i++){
     nodes[i].setAttribute("disabled", "disabled");
@@ -393,6 +393,29 @@ function disableNodes(nodes){
 function enableNodes(nodes){
   for(var i=0;i<nodes.length;i++){
     nodes[i].removeAttribute("disabled");
+  }
+}
+//localStorage functions
+//[Gamemode, numberOfFrets, time, score]
+//localStorage will have two arrays, one for each gamemode, consequentely those arrays will have arrays that contain the number of frets used, the time and the final score
+//localStorage.setItem(findNote,findfret)
+function setScoreLocal(option,score,time,fretNumber){
+  scoreLocalExists();
+  var scoreboard = getScoreLocal(option);
+  scoreboard.push([score,time,fretNumber]);
+  scoreboard = JSON.stringify(scoreboard);
+  localStorage.setItem(option,scoreboard);
+}
+function getScoreLocal(option){
+  scoreLocalExists();
+  return JSON.parse(localStorage.getItem(option))
+}
+function scoreLocalExists(){
+  if (!JSON.parse(localStorage.getItem("findFret"))){
+    localStorage.setItem("findFret",JSON.stringify([]));
+  }
+  if (!JSON.parse(localStorage.getItem("findNote"))){
+    localStorage.setItem("findNote",JSON.stringify([]));
   }
 }
 export default Game;
