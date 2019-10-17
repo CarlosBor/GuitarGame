@@ -10,7 +10,7 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
-      timeRemaining : 2,
+      timeRemaining : 40,
       activeWires:[true,true,true,true,true,true,true,true,true],
       currentQuestion: null,
       currentScore: null
@@ -42,6 +42,7 @@ class Game extends React.Component {
       currentTuning = {this.state.tuning}
       activeWires = {this.state.activeWires}
       checkAnswer = {this.checkAnswer}
+      checkAnswerSelectNote = {this.checkAnswerSelectNote}
     />
   }
 
@@ -153,6 +154,23 @@ class Game extends React.Component {
     this.currentQuestionChange(randomFret.getAttribute("note"));
   }
 
+  checkAnswerSelectNote = event => {
+    if (!event.target.classList.contains("inGame")){
+      return
+     }
+     var question = this.state.currentQuestion.split(" ")[0];
+     if(event.target.getAttribute("note") == question){
+      this.winScore();
+     }else{
+       this.loseScore();
+     }
+     document.querySelector(".questionNode").classList.remove("questionNode");
+     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
+     var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
+     randomFret.classList.add('questionNode');
+     this.currentQuestionChange(randomFret.getAttribute("note"));
+  }
+  
   selectQuestionFret = () =>{
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
         //Initial question fret
@@ -187,6 +205,7 @@ class Board extends React.Component{
   constructor(props){
     super(props);
     this.checkAnswer = this.props.checkAnswer;
+    this.checkAnswerSelectNote = this.props.checkAnswerSelectNote;
   }
 
   renderWire(numberOfFrets, wireTuning, activeToggle, wireNumber){
@@ -217,12 +236,25 @@ class Board extends React.Component{
     )
   }
 
+  generateSelectNoteButtons(){
+    var selectNoteButtons = noteCircle.map((note) =>
+    <button class ="selectNoteButtons" note={note} onClick={this.checkAnswerSelectNote}>{note}</button>
+      )
+    return(
+      <div class="selectNoteDiv">
+        {selectNoteButtons}
+      </div>
+    )
+  }
 
   render(){
     return(
+      <>
       <div class="fretBoard">
        {this.renderBoard(this.props.numberOfFrets, this.props.numberOfWires,this.props.currentTuning)}
       </div>
+      {this.generateSelectNoteButtons()}
+      </>
     )
   }
 
@@ -307,6 +339,7 @@ class GameStartButtons extends React.Component{
   constructor(props){
     super(props);
     this.selectQuestionFretStart = this.selectQuestionFretStart.bind(this);
+    this.selectNoteStart = this.selectNoteStart.bind(this);
     this.timePass = this.props.timePass.bind(this);
     this.selectQuestionFret = this.props.selectQuestionFret;
   }
@@ -317,6 +350,16 @@ class GameStartButtons extends React.Component{
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
     for (var i=0;i<activeFrets.length;i++){
       activeFrets[i].className += " inGame";
+    }
+  }
+
+  selectNoteStart(){
+    this.selectQuestionFret();
+    this.timePass();
+    var activeButtons = document.querySelectorAll("button.selectNoteButtons");
+    console.log(activeButtons);
+    for(var i=0;i<activeButtons.length;i++){
+      activeButtons[i].className +=" inGame";
     }
   }
 
@@ -333,8 +376,8 @@ class GameStartButtons extends React.Component{
   render(){
     return(
       <>
-      <input type="button" value="Keepo" onClick={this.selectQuestionFretStart}/>
-      <input type="button" value="Hm" onClick={this.timePass}/>
+      <input type="button" value="Game1" onClick={this.selectQuestionFretStart}/>
+      <input type="button" value="Game2" onClick={this.selectNoteStart}/>
       </>
     )
   }
