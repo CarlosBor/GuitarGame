@@ -10,10 +10,11 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
-      timeRemaining : 40,
+      timeRemaining : 2,
       activeWires:[true,true,true,true,true,true,true,true,true],
       currentQuestion: null,
-      currentScore: null
+      currentScore: null,
+      currentGameMode: null
       };
   }
 
@@ -30,6 +31,7 @@ class Game extends React.Component {
              {this.renderOptions()}
           </div>
           <div class="scores">
+            {this.renderScores()}
           </div>
       </div>
     );
@@ -42,7 +44,6 @@ class Game extends React.Component {
       currentTuning = {this.state.tuning}
       activeWires = {this.state.activeWires}
       checkAnswer = {this.checkAnswer}
-      checkAnswerSelectNote = {this.checkAnswerSelectNote}
     />
   }
 
@@ -61,9 +62,15 @@ class Game extends React.Component {
       currentQuestion = {this.state.currentQuestion}
       timeRemainingChange = {this.timeRemainingChange}
       timePass = {this.timePass}
+      currentGameModeSet = {this.currentGameModeSet}
     />
   }
 
+  renderScores(){
+    return <Scores 
+
+    />
+  }
   /* React.Component doesn't auto bind methods to itself. You need to bind them yourself */
   /* Option A: Bind them in the constructor, as in this.tuningChange = this.tuningChange.bind(this); in the constructor of this class*/
   /* Option B: when passed as a prop, pass it as this.tuningChange.bind(this) */
@@ -111,6 +118,12 @@ class Game extends React.Component {
     })
   }
   
+  currentGameModeSet = (mode) => {
+    this.setState({
+      currentGameMode : mode
+    })
+  }
+
 ////////TODO: Have to associate the ending of the countdown to saving the score
   timePass = async () => {
     var totalTime = this.state.timeRemaining;
@@ -131,7 +144,10 @@ class Game extends React.Component {
         inGameNodes[i].classList.remove("inGame");
       }
       enableNodes(optionNodes);
-      this.saveScore(fretNumber,totalTime);
+      this.saveScore(this.state.currentGameMode, fretNumber,totalTime);
+      this.currentGameModeSet(null);
+      this.timeRemainingSet(document.querySelector(".timeSelector").value);
+
   }
 
   sleep = (ms) => {
@@ -142,33 +158,24 @@ class Game extends React.Component {
     if (!event.target.classList.contains("inGame")){
      return
     }
-    if(event.target.getAttribute("note") == this.state.currentQuestion){
+
+    if (this.state.currentGameMode == "note"){
+      var question = this.state.currentQuestion.split(" ")[0];
+    }else{
+      var question = this.state.currentQuestion;
+    }
+
+    if(event.target.getAttribute("note") == question){
      this.winScore();
     }else{
       this.loseScore();
     }
+
     document.querySelector(".questionNode").classList.remove("questionNode");
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
     var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
     randomFret.classList.add('questionNode');
     this.currentQuestionChange(randomFret.getAttribute("note"));
-  }
-
-  checkAnswerSelectNote = event => {
-    if (!event.target.classList.contains("inGame")){
-      return
-     }
-     var question = this.state.currentQuestion.split(" ")[0];
-     if(event.target.getAttribute("note") == question){
-      this.winScore();
-     }else{
-       this.loseScore();
-     }
-     document.querySelector(".questionNode").classList.remove("questionNode");
-     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
-     var randomFret = activeFrets[Math.floor(Math.random() * activeFrets.length)];
-     randomFret.classList.add('questionNode');
-     this.currentQuestionChange(randomFret.getAttribute("note"));
   }
   
   selectQuestionFret = () =>{
@@ -193,19 +200,17 @@ class Game extends React.Component {
       currentScore : newScore
     })
   }
-  saveScore = (fretNumber, totalTime) =>{
+  saveScore = (mode, fretNumber, totalTime) =>{
     var points = parseInt(document.querySelector(".score").innerHTML) || 0;
-    setScoreLocal("findFret",points,fretNumber,totalTime);
-    console.log(getScoreLocal("findFret"));
+    setScoreLocal(mode, points,fretNumber,totalTime);
+    console.log(getScoreLocal(mode));
   }
-
 }
 
 class Board extends React.Component{
   constructor(props){
     super(props);
     this.checkAnswer = this.props.checkAnswer;
-    this.checkAnswerSelectNote = this.props.checkAnswerSelectNote;
   }
 
   renderWire(numberOfFrets, wireTuning, activeToggle, wireNumber){
@@ -238,7 +243,7 @@ class Board extends React.Component{
 
   generateSelectNoteButtons(){
     var selectNoteButtons = noteCircle.map((note) =>
-    <button class ="selectNoteButtons" note={note} onClick={this.checkAnswerSelectNote}>{note}</button>
+    <button class ="selectNoteButtons" note={note} onClick={this.checkAnswer}>{note}</button>
       )
     return(
       <div class="selectNoteDiv">
@@ -257,7 +262,6 @@ class Board extends React.Component{
       </>
     )
   }
-
 }
 
 class Options extends React.Component{
@@ -281,6 +285,7 @@ class Options extends React.Component{
           loseScore = {this.props.loseScore}
           timePass = {this.props.timePass}
           selectQuestionFret = {this.props.selectQuestionFret}
+          currentGameModeSet = {this.props.currentGameModeSet}
         />
         <TimeSelector
           timeRemainingChange = {this.props.timeRemainingChange}
@@ -288,7 +293,6 @@ class Options extends React.Component{
       </>
       )
   }
-
 }
 
 class TuningSelector extends React.Component{
@@ -308,7 +312,6 @@ class TuningSelector extends React.Component{
         <input type="checkbox" defaultChecked="true" className={index} onChange={this.props.activeWiresChange}></input>
         </>
       )
-  
       return(
         <div class="tuningOptions">
           {totalDropdowns}
@@ -332,7 +335,6 @@ class StringNumberSelector extends React.Component{
       <input type="number" min="1" max="6" defaultValue="6" onChange={this.props.stringNumberChange}/>
     )
   }
-
 }
 
 class GameStartButtons extends React.Component{
@@ -342,9 +344,11 @@ class GameStartButtons extends React.Component{
     this.selectNoteStart = this.selectNoteStart.bind(this);
     this.timePass = this.props.timePass.bind(this);
     this.selectQuestionFret = this.props.selectQuestionFret;
+    this.currentGameModeSet = this.props.currentGameModeSet;
   }
 
   selectQuestionFretStart(){//Function that actually fires from the button press
+    this.currentGameModeSet("questionFret");
     this.selectQuestionFret();
     this.timePass();
     var activeFrets = document.querySelector("div.fretBoard").querySelectorAll("div.wire.visible>div.fret");
@@ -354,6 +358,7 @@ class GameStartButtons extends React.Component{
   }
 
   selectNoteStart(){
+    this.currentGameModeSet("note");
     this.selectQuestionFret();
     this.timePass();
     var activeButtons = document.querySelectorAll("button.selectNoteButtons");
@@ -381,15 +386,14 @@ class GameStartButtons extends React.Component{
       </>
     )
   }
-
 }
 
 class TimeSelector extends React.Component{
-
   render(){
     return(
       <>
-      <select onChange={this.props.timeRemainingChange}>
+      <select class="timeSelector" onChange={this.props.timeRemainingChange}>
+        <option value ="3">3</option>
         <option value="30">30</option>
         <option value="45">45</option>
         <option value="60" selected>60</option>
@@ -402,9 +406,24 @@ class TimeSelector extends React.Component{
   }
 }
 
+
+class Scores extends React.Component{
+  getScores(){
+    var scoreQuestionFrets = getScoreLocal("questionFret");
+    var scoreNote = getScoreLocal("note");
+
+  }
+
+  render(){
+    return(
+      <>
+        
+      </>
+    )
+  }
+}
 const noteCircle = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
 
-//I need a function that adds a line of divs to div.board, getting their note from their left or from options if there isn't any.
 function calculateNote(initialNote, stepNumber){
     //Given a initial note and a number of steps, it returns the note X steps from the initial note.
     initialNote = initialNote.toUpperCase();
@@ -438,27 +457,45 @@ function enableNodes(nodes){
     nodes[i].removeAttribute("disabled");
   }
 }
-//localStorage functions
-//[Gamemode, numberOfFrets, time, score]
-//localStorage will have two arrays, one for each gamemode, consequentely those arrays will have arrays that contain the number of frets used, the time and the final score
-//localStorage.setItem(findNote,findfret)
+
 function setScoreLocal(option,score,time,fretNumber){
   scoreLocalExists();
+  time = parseInt(time);
   var scoreboard = getScoreLocal(option);
   scoreboard.push([score,time,fretNumber]);
+  scoreboard.sort(scoreSorter);
   scoreboard = JSON.stringify(scoreboard);
   localStorage.setItem(option,scoreboard);
 }
+
 function getScoreLocal(option){
   scoreLocalExists();
   return JSON.parse(localStorage.getItem(option))
 }
-function scoreLocalExists(){
-  if (!JSON.parse(localStorage.getItem("findFret"))){
-    localStorage.setItem("findFret",JSON.stringify([]));
-  }
-  if (!JSON.parse(localStorage.getItem("findNote"))){
-    localStorage.setItem("findNote",JSON.stringify([]));
+
+function orderScore(){
+
+}
+
+function scoreSorter(score1, score2){
+  score1 = ((score1[0] * 1.1 * score1[1])/score1[2]);
+  score2 = ((score2[0] * 1.1 * score2[1])/score2[2]);
+  if (score1>score2){
+    return 1;
+  }else if (score1>score2){
+    return -1;
+  }else{
+    return 0;
   }
 }
+
+function scoreLocalExists(){
+  if (!JSON.parse(localStorage.getItem("questionFret"))){
+    localStorage.setItem("questionFret",JSON.stringify([]));
+  }
+  if (!JSON.parse(localStorage.getItem("note"))){
+    localStorage.setItem("note",JSON.stringify([]));
+  }
+}
+
 export default Game;
