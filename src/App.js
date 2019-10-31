@@ -14,7 +14,8 @@ class Game extends React.Component {
       activeWires:[true,true,true,true,true,true,true,true,true],
       currentQuestion: null,
       currentScore: null,
-      currentGameMode: null
+      currentGameMode: null,
+      scoreboard: null
       };
   }
 
@@ -68,7 +69,8 @@ class Game extends React.Component {
 
   renderScores(){
     return <Scores 
-
+    scoreboardSet = {this.scoreboardSet}
+    scoreboard = {this.state.scoreboard}
     />
   }
   /* React.Component doesn't auto bind methods to itself. You need to bind them yourself */
@@ -123,6 +125,12 @@ class Game extends React.Component {
       currentGameMode : mode
     })
   }
+  scoreboardSet = (scoreboard) => {
+    console.log(scoreboard);
+    this.setState({
+      scoreboard : scoreboard
+    })
+  }
 
 ////////TODO: Have to associate the ending of the countdown to saving the score
   timePass = async () => {
@@ -147,7 +155,8 @@ class Game extends React.Component {
       this.saveScore(this.state.currentGameMode, fretNumber,totalTime);
       this.currentGameModeSet(null);
       this.timeRemainingSet(document.querySelector(".timeSelector").value);
-
+      this.resetScore();
+      orderScores();
   }
 
   sleep = (ms) => {
@@ -200,8 +209,14 @@ class Game extends React.Component {
       currentScore : newScore
     })
   }
+  resetScore = () =>{
+    this.setState({
+      currentScore : 0
+    })
+  }
   saveScore = (mode, fretNumber, totalTime) =>{
     var points = parseInt(document.querySelector(".score").innerHTML) || 0;
+    totalTime = parseInt(totalTime);
     setScoreLocal(mode, points,fretNumber,totalTime);
     console.log(getScoreLocal(mode));
   }
@@ -409,15 +424,24 @@ class TimeSelector extends React.Component{
 
 class Scores extends React.Component{
   getScores(){
-    var scoreQuestionFrets = getScoreLocal("questionFret");
-    var scoreNote = getScoreLocal("note");
-
+    var scoreboard = [];
+    scoreboard[0] = JSON.parse(localStorage.getItem("note"));
+    scoreboard[1] = JSON.parse(localStorage.getItem("questionFret"));
+    this.props.scoreboardSet(scoreboard);
   }
 
+  componentDidMount(){
+    this.getScores();
+  }
   render(){
     return(
       <>
-        
+        <div class="ranking">
+          <span>questionFret</span>
+          <span>{this.props.scoreboard[1][0][0]}</span>
+          <span>Notes</span>
+          <span></span>
+        </div>
       </>
     )
   }
@@ -473,18 +497,31 @@ function getScoreLocal(option){
   return JSON.parse(localStorage.getItem(option))
 }
 
-function orderScore(){
-
+function orderScores(){
+  console.log("Something");
+  var noteScore = getScoreLocal("note");
+  var questionFretScore = getScoreLocal("questionFret");
+  noteScore.sort(scoreSorter);
+  questionFretScore.sort(scoreSorter);
+  noteScore = JSON.stringify(noteScore);
+  questionFretScore = JSON.stringify(questionFretScore);
+  localStorage.setItem("note",noteScore);
+  localStorage.setItem("questionFret", questionFretScore);
 }
 
 function scoreSorter(score1, score2){
   score1 = ((score1[0] * 1.1 * score1[1])/score1[2]);
   score2 = ((score2[0] * 1.1 * score2[1])/score2[2]);
+  console.log("The first score is: " + score1);
+  console.log("The second score is: " + score2);
   if (score1>score2){
-    return 1;
-  }else if (score1>score2){
+    console.log("-1 happens");
     return -1;
+  }else if (score1<score2){
+    console.log("1 happens");
+    return 1;
   }else{
+    console.log("0 happens");
     return 0;
   }
 }
