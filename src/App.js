@@ -15,7 +15,7 @@ class Game extends React.Component {
       currentQuestion: null,
       currentScore: null,
       currentGameMode: null,
-      scoreboard: null
+      scoreboard: []
       };
   }
 
@@ -71,6 +71,7 @@ class Game extends React.Component {
     return <Scores 
     scoreboardSet = {this.scoreboardSet}
     scoreboard = {this.state.scoreboard}
+    updateScoreLocalstorage = {this.updateScoreLocalstorage}
     />
   }
   /* React.Component doesn't auto bind methods to itself. You need to bind them yourself */
@@ -126,10 +127,16 @@ class Game extends React.Component {
     })
   }
   scoreboardSet = (scoreboard) => {
-    console.log(scoreboard);
     this.setState({
       scoreboard : scoreboard
     })
+  }
+
+  updateScoreLocalstorage = () => {
+    var scoreboard = [];
+    scoreboard[0] = JSON.parse(localStorage.getItem("note"));
+    scoreboard[1] = JSON.parse(localStorage.getItem("questionFret"));
+    this.scoreboardSet(scoreboard);
   }
 
 ////////TODO: Have to associate the ending of the countdown to saving the score
@@ -197,14 +204,12 @@ class Game extends React.Component {
 
   winScore = () =>{
     var newScore = this.state.currentScore + 100;
-    console.log("Win");
     this.setState({
       currentScore : newScore
     })
   }
   loseScore = () =>{
     var newScore = this.state.currentScore - 100;
-    console.log("Lose");
     this.setState({
       currentScore : newScore
     })
@@ -218,7 +223,7 @@ class Game extends React.Component {
     var points = parseInt(document.querySelector(".score").innerHTML) || 0;
     totalTime = parseInt(totalTime);
     setScoreLocal(mode, points,fretNumber,totalTime);
-    console.log(getScoreLocal(mode));
+    this.updateScoreLocalstorage();
   }
 }
 
@@ -423,24 +428,45 @@ class TimeSelector extends React.Component{
 
 
 class Scores extends React.Component{
-  getScores(){
-    var scoreboard = [];
-    scoreboard[0] = JSON.parse(localStorage.getItem("note"));
-    scoreboard[1] = JSON.parse(localStorage.getItem("questionFret"));
-    this.props.scoreboardSet(scoreboard);
+
+  getScores(arrayinfo, option){
+    //0 for note, 1 for questionFret
+    if (typeof arrayinfo !== 'undefined' && arrayinfo != null){
+      return(
+        <div>
+          {this.renderScore(arrayinfo[0])}
+          {this.renderScore(arrayinfo[1])}
+          {this.renderScore(arrayinfo[2])}
+        </div>
+      ) 
+    }else{
+      console.log("Happens");
+      return(<div>Whew</div>)
+    }
+  }
+
+  renderScore(scoreArray){
+    if (typeof scoreArray!=='undefined'){
+      return(
+        <div>Points are {scoreArray[0]} frets are {scoreArray[1]} and time is {scoreArray[2]}</div>
+      )
+    }else{
+      return(
+        <div>Vacio</div>
+      )
+    }
   }
 
   componentDidMount(){
-    this.getScores();
+    this.props.updateScoreLocalstorage()
   }
+
   render(){
     return(
       <>
         <div class="ranking">
-          <span>questionFret</span>
-          <span>{this.props.scoreboard[1][0][0]}</span>
-          <span>Notes</span>
-          <span></span>
+        <span>{this.getScores(this.props.scoreboard[0],0)}</span>
+        <span>{this.getScores(this.props.scoreboard[1],1)}</span>
         </div>
       </>
     )
@@ -512,16 +538,11 @@ function orderScores(){
 function scoreSorter(score1, score2){
   score1 = ((score1[0] * 1.1 * score1[1])/score1[2]);
   score2 = ((score2[0] * 1.1 * score2[1])/score2[2]);
-  console.log("The first score is: " + score1);
-  console.log("The second score is: " + score2);
   if (score1>score2){
-    console.log("-1 happens");
     return -1;
   }else if (score1<score2){
-    console.log("1 happens");
     return 1;
   }else{
-    console.log("0 happens");
     return 0;
   }
 }
