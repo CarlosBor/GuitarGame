@@ -1,3 +1,7 @@
+*{
+    margin:0;
+}
+
 .board{
     background-color: #4e3030;
     grid-column-start: 1;
@@ -34,8 +38,10 @@
     grid-row-start:2;
     grid-row-end:3;
     height:100%;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
-
 
 .scores{
     background-color: #3c2c94;
@@ -46,6 +52,53 @@
     height:100%;
 }
 
+.tuningOptions{
+    grid-column-start:1;
+    grid-column-end:3;
+    grid-row-start:1;
+    grid-row-end:2;
+    text-align:center;
+}
+
+.stringNumberSelector{
+    grid-column-start:1;
+    grid-column-end:2;
+    grid-row-start:2;
+    grid-row-end:3;
+}
+
+.fretNumberSelector{
+    grid-column-start:1;
+    grid-column-end:2;
+    grid-row-start:3;
+    grid-row-end:4;
+}
+
+.timeSelectorDiv{
+    grid-column-start:1;
+    grid-column-end:2;
+    grid-row-start:4;
+    grid-row-end:5;
+}
+
+.questionFretButton{
+    grid-column-start:2;
+    grid-column-end:3;
+    grid-row-start:2;
+    grid-row-end:4;
+}
+
+.noteButton{
+    grid-column-start:2;
+    grid-column-end:3;
+    grid-row-start:4;
+    grid-row-end:6;
+}
+
+.ranking>div{
+
+}
+
 .game{
     display:grid;
     grid-template-columns: 3fr 5fr;
@@ -53,9 +106,6 @@
     height:100vh;
 }
 
-*{
-    margin:0;
-}
 
 .hidden{
     opacity:0.3;
@@ -76,3 +126,9 @@
     display:flex;
     flex-direction:row;
 } 
+
+.selectNoteButtons{
+    text-align:center;
+    vertical-align:middle;
+    display:inline;
+}

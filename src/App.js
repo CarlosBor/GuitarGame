@@ -54,6 +54,7 @@ class Game extends React.Component {
       currentTuning = {this.state.tuning}
       tuningChange={this.tuningChange}
       stringNumberChange={this.stringNumberChange}
+      fretNumberChange={this.fretNumberChange}
       activeWires = {this.state.activeWires}
       activeWiresChange = {this.activeWiresChange}
       currentQuestionChange = {this.currentQuestionChange}
@@ -94,7 +95,12 @@ class Game extends React.Component {
       wireNumber : newWireNumber
     })
   }
-
+  fretNumberChange = event => {
+    var newFretNumber = parseInt(event.target.value);
+    this.setState({
+      fretNumber : newFretNumber
+    })
+  }
   activeWiresChange = event => {
     var newActiveWires = this.state.activeWires.concat();
     newActiveWires[event.target.className] = event.target.checked;
@@ -298,6 +304,9 @@ class Options extends React.Component{
         <StringNumberSelector
           stringNumberChange = {this.props.stringNumberChange}
         />
+        <FretNumberSelector
+          fretNumberChange = {this.props.fretNumberChange}
+        />
         <GameStartButtons
           currentQuestionChange = {this.props.currentQuestionChange}
           currentQuestion = {this.props.currentQuestion}
@@ -329,7 +338,7 @@ class TuningSelector extends React.Component{
         <select className={this.props.activeWires[index] ? "visible" : "hidden"} value={this.selected} onChange={this.props.tuningChange} defaultValue={index+","+this.props.currentTuning[index]}>
           {elements}
         </select>
-        <input type="checkbox" defaultChecked="true" className={index} onChange={this.props.activeWiresChange}></input>
+        <input type="checkbox" defaultChecked={this.props.activeWires[index]} className={index} onChange={this.props.activeWiresChange}></input>
         </>
       )
       return(
@@ -352,7 +361,26 @@ class StringNumberSelector extends React.Component{
   
   render(){
     return(
-      <input type="number" min="1" max="6" defaultValue="6" onChange={this.props.stringNumberChange}/>
+      <>
+      <div class="stringNumberSelector">
+        <input type="number" min="1" max="6" defaultValue="6" onChange={this.props.stringNumberChange}/>
+        <span>String Number</span>
+      </div>
+      </>
+    )
+  }
+}
+
+class FretNumberSelector extends React.Component{
+  
+  render(){
+    return(
+      <>
+      <div class="fretNumberSelector">
+        <input type="number" min="1" max="12" defaultValue="12" onChange={this.props.fretNumberChange}/>
+        <span>Fret Number</span>
+      </div>
+      </>
     )
   }
 }
@@ -401,8 +429,8 @@ class GameStartButtons extends React.Component{
   render(){
     return(
       <>
-      <input type="button" value="Game1" onClick={this.selectQuestionFretStart}/>
-      <input type="button" value="Game2" onClick={this.selectNoteStart}/>
+      <input type="button" value="Question Fret" class="questionFretButton" onClick={this.selectQuestionFretStart}/>
+      <input type="button" value="Note" class="noteButton" onClick={this.selectNoteStart}/>
       </>
     )
   }
@@ -411,7 +439,7 @@ class GameStartButtons extends React.Component{
 class TimeSelector extends React.Component{
   render(){
     return(
-      <>
+      <><div class="timeSelectorDiv">
       <select class="timeSelector" onChange={this.props.timeRemainingChange}>
         <option value ="3">3</option>
         <option value="30">30</option>
@@ -420,7 +448,8 @@ class TimeSelector extends React.Component{
         <option value="90">90</option>
         <option value="120">120</option>
       </select>
-      <span>Seconds</span>
+      <span>Time</span>
+      </div>
       </>
     )
   }
@@ -429,8 +458,7 @@ class TimeSelector extends React.Component{
 
 class Scores extends React.Component{
 
-  getScores(arrayinfo, option){
-    //0 for note, 1 for questionFret
+  getScores(arrayinfo){
     if (typeof arrayinfo !== 'undefined' && arrayinfo != null){
       return(
         <div>
@@ -441,7 +469,7 @@ class Scores extends React.Component{
       ) 
     }else{
       console.log("Happens");
-      return(<div>Whew</div>)
+      return(<div>No score</div>)
     }
   }
 
@@ -465,8 +493,8 @@ class Scores extends React.Component{
     return(
       <>
         <div class="ranking">
-        <span>{this.getScores(this.props.scoreboard[0],0)}</span>
-        <span>{this.getScores(this.props.scoreboard[1],1)}</span>
+          <div>{this.getScores(this.props.scoreboard[0])}</div>
+          <div>{this.getScores(this.props.scoreboard[1])}</div>
         </div>
       </>
     )
@@ -474,7 +502,7 @@ class Scores extends React.Component{
 }
 const noteCircle = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
 
-function calculateNote(initialNote, stepNumber){
+function calculateNote(initialNote="A", stepNumber){
     //Given a initial note and a number of steps, it returns the note X steps from the initial note.
     initialNote = initialNote.toUpperCase();
     stepNumber = stepNumber + findNote(initialNote);
