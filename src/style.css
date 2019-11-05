@@ -95,8 +95,17 @@
     grid-row-end:6;
 }
 
-.ranking>div{
+.ranking{
+    display:flex;
+    flex-direction:row;
+}
 
+.ranking>div{
+    
+}
+
+.ranking>div>div{
+    
 }
 
 .game{

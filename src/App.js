@@ -461,11 +461,11 @@ class Scores extends React.Component{
   getScores(arrayinfo){
     if (typeof arrayinfo !== 'undefined' && arrayinfo != null){
       return(
-        <div>
+        <>
           {this.renderScore(arrayinfo[0])}
           {this.renderScore(arrayinfo[1])}
           {this.renderScore(arrayinfo[2])}
-        </div>
+        </>
       ) 
     }else{
       console.log("Happens");
@@ -493,8 +493,8 @@ class Scores extends React.Component{
     return(
       <>
         <div class="ranking">
-          <div>{this.getScores(this.props.scoreboard[0])}</div>
-          <div>{this.getScores(this.props.scoreboard[1])}</div>
+          <div class="noteScoreboard">{this.getScores(this.props.scoreboard[0])}</div>
+          <div class="questionFretScoreboard">{this.getScores(this.props.scoreboard[1])}</div>
         </div>
       </>
     )
