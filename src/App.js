@@ -429,8 +429,8 @@ class GameStartButtons extends React.Component{
   render(){
     return(
       <>
-      <input type="button" value="Question Fret" class="questionFretButton" onClick={this.selectQuestionFretStart}/>
-      <input type="button" value="Note" class="noteButton" onClick={this.selectNoteStart}/>
+      <input type="button" value="Question Fret" class="questionFretButton gameStartButton" onClick={this.selectQuestionFretStart}/>
+      <input type="button" value="Note" class="noteButton gameStartButton" onClick={this.selectNoteStart}/>
       </>
     )
   }
