@@ -4,13 +4,13 @@ $blue : #3498db;
 $darkblue : #34495E;
 $green :  #1ABC9C;
 $red : #E74C3C;
-
+$white: #AAAAAA;
 *{
     margin:0;
 }
 
 .board{
-    background-color: #4e3030;
+    background-color:$white;
     grid-column-start: 1;
     grid-column-end: 3;
     grid-row-start:1;
@@ -50,6 +50,7 @@ $red : #E74C3C;
     display:flex;
     flex-direction:row;
     width:auto;
+    background-image: url("background-images/wood.jpg");
     border-width:1px;
     border-color:black;
     border-style:solid;
@@ -62,7 +63,7 @@ $red : #E74C3C;
     flex-direction:column;
 }
 .options{
-    background-color: #5a7548;
+    background-color: $white;
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start:2;
@@ -74,7 +75,11 @@ $red : #E74C3C;
 }
 
 .scores{
-    background-color: #3c2c94;
+    background-color: $white;
+    border-width:5px;
+    border-color: white;
+    border-style:solid;
+    border-radius:15px;
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start:2;
@@ -140,7 +145,7 @@ $red : #E74C3C;
 
 .game{
     display:grid;
-    grid-template-columns: 3fr 5fr;
+    grid-template-columns: 3fr 3fr;
     grid-template-rows: 3fr 1fr;
     height:100vh;
 }

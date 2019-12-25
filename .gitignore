@@ -23,5 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 
-src\style.css
-src\testing.txt
+src/style.css
+src/testing.txt
