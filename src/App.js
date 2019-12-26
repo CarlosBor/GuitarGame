@@ -23,9 +23,11 @@ class Game extends React.Component {
     return (
       <div class="game">
           <div class="board">
-            <div class="question">{this.state.currentQuestion}</div>
-            <div class="score">{this.state.currentScore}</div>
-            <div class="timeRemaining">{this.state.timeRemaining}</div>
+            <div class="gameInfo">
+              <div class="question">Point to the fret: {this.state.currentQuestion}</div>
+              <div class="score">SCORE: {this.state.currentScore}</div>
+              <div class="timeRemaining">TIME: {this.state.timeRemaining}</div>
+            </div>
               {this.renderBoard()}
           </div>
           <div class="options">
