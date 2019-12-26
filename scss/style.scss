@@ -18,6 +18,8 @@ $white: #AAAAAA;
 .gameInfo>div{
     color:yellow;
     font-weight:800;
+    margin-left:5px;
+    margin-right:5px;
 }
 
 .board{
@@ -92,19 +94,6 @@ $white: #AAAAAA;
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
 
-.scores{
-    background-color: $white;
-    border-width:5px;
-    border-color: white;
-    border-style:solid;
-    border-radius:15px;
-    grid-column-start: 2;
-    grid-column-end: 3;
-    grid-row-start:2;
-    grid-row-end:3;
-    height:100%;
-}
-
 .tuningOptions{
     grid-column-start:1;
     grid-column-end:3;
@@ -146,11 +135,6 @@ $white: #AAAAAA;
     grid-column-end:3;
     grid-row-start:4;
     grid-row-end:6;
-}
-
-.ranking{
-    display:flex;
-    flex-direction:row;
 }
 
 .game{
@@ -205,3 +189,36 @@ $white: #AAAAAA;
     box-shadow: 0 0 10px 0 $blue inset, 0 0 10px 4px $blue;
     color:#333333;
   }
+
+  .scores{
+    background-color: $white;
+    border-width:5px;
+    border-color: white;
+    border-style:solid;
+    border-radius:15px;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start:2;
+    grid-row-end:3;
+    height:100%;
+}
+
+.noteScoreBoard, .questionFretScoreBoard{
+    padding:5px;
+    margin:15px;
+    border-top:0px;
+    border-bottom:0px;
+    border-left:5px;
+    border-right:5px;
+    border-style:solid;
+    border-color:$blue;
+    margin-top:30px;
+}
+.scoreHeader{
+    position:relative;
+    top:-15px;
+}
+.ranking{
+    display:flex;
+    flex-direction:row;
+}

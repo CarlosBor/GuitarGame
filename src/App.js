@@ -478,11 +478,11 @@ class Scores extends React.Component{
   renderScore(scoreArray){
     if (typeof scoreArray!=='undefined'){
       return(
-        <div>Points are {scoreArray[0]} frets are {scoreArray[1]} and time is {scoreArray[2]}</div>
+        <div>{scoreArray[0]} points with {scoreArray[1]} frets in {scoreArray[2]} seconds</div>
       )
     }else{
       return(
-        <div>Vacio</div>
+        <div>Empty</div>
       )
     }
   }
@@ -495,8 +495,10 @@ class Scores extends React.Component{
     return(
       <>
         <div class="ranking">
-          <div class="noteScoreboard">{this.getScores(this.props.scoreboard[0])}</div>
-          <div class="questionFretScoreboard">{this.getScores(this.props.scoreboard[1])}</div>
+        
+          <div class="noteScoreBoard"><span class="scoreHeader">noteScoreBoard</span>{this.getScores(this.props.scoreboard[0])}</div>
+        
+          <div class="questionFretScoreBoard"><span class="scoreHeader">questionFretScoreBoard</span>{this.getScores(this.props.scoreboard[1])}</div>
         </div>
       </>
     )
