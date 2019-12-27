@@ -192,10 +192,6 @@ $white: #AAAAAA;
 
   .scores{
     background-color: $white;
-    border-width:5px;
-    border-color: white;
-    border-style:solid;
-    border-radius:15px;
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start:2;
@@ -213,7 +209,34 @@ $white: #AAAAAA;
     border-style:solid;
     border-color:$blue;
     margin-top:30px;
+    &::after {
+        content:'';
+        display:block;
+        height:5px;
+        width:0%;
+        background-color:$blue;
+    }
 }
+
+@keyframes lineExpand {
+    0%{
+        width:0%;
+    }
+    100%{
+        width:100%;
+    }
+}
+
+.noteScoreBoard:hover, .questionFretScoreBoard:hover{
+    &::after {
+        content:'';
+        display:block;
+        height:5px;
+        background-color:$blue;
+        animation: 0.8s lineExpand;
+    }
+}
+
 .scoreHeader{
     position:relative;
     top:-15px;
@@ -221,4 +244,5 @@ $white: #AAAAAA;
 .ranking{
     display:flex;
     flex-direction:row;
+    height:100%;
 }
