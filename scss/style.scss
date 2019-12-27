@@ -16,7 +16,7 @@ $white: #AAAAAA;
 }
 
 .gameInfo>div{
-    color:yellow;
+    color:$green;
     font-weight:800;
     margin-left:5px;
     margin-right:5px;
@@ -151,13 +151,15 @@ $white: #AAAAAA;
 }
 
 .questionNode{
-    background-color:yellow;
+    background-color:$green;
 }
 
 .selectNoteButtons{
     display:flex;
     height:50px;
-    width:50px;
+    width:52px;
+    margin-left: 3px;
+    margin-right:1px;
 }
 
 .selectNoteDiv{
