@@ -215,6 +215,7 @@ $white: #AAAAAA;
         height:5px;
         width:0%;
         background-color:$blue;
+        transition: width 0.7s ease-in-out;
     }
 }
 
@@ -233,7 +234,8 @@ $white: #AAAAAA;
         display:block;
         height:5px;
         background-color:$blue;
-        animation: 0.8s lineExpand;
+        transition: width 0.7s ease-in-out;
+        width:100%;
     }
 }
 

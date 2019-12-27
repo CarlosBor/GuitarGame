@@ -1,1 +1,0 @@
-Deactivating a string, then reducing the number of string below its position and increasing it again shows a checked box for activation, but a deactivated dropdown
