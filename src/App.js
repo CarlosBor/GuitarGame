@@ -10,38 +10,33 @@ class Game extends React.Component {
       tuning:["E","B","G","D","A","E"],
       wireNumber:6,
       fretNumber:12,
-      timeRemaining : 2,
+      timeRemaining : 60,
       activeWires:[true,true,true,true,true,true,true,true,true],
       currentQuestion: null,
       currentScore: null,
       currentGameMode: null,
-      scoreboard: [],
-      dismissPrompt: ()=>{
-        document.querySelector('.portraitPrompt').classList.add('dismissedPrompt');
-      },
+      scoreboard: []
       };
-
   }
 
   render(){
     return (
-        <div class="game">
-          <div class="portraitPrompt" onClick={this.state.dismissPrompt}><p class="promptText">Switch to portrait for a better experience</p><p class="promptText">Tap to dismiss</p></div>
-            <div class="board">
-              <div class="gameInfo">
-                <div class="question">Point to the fret: {this.state.currentQuestion}</div>
-                <div class="score">SCORE: {this.state.currentScore}</div>
-                <div class="timeRemaining">TIME: {this.state.timeRemaining}</div>
-              </div>
-                {this.renderBoard()}
+      <div class="game">
+          <div class="board">
+            <div class="gameInfo">
+              <div class="question">Point to the fret: {this.state.currentQuestion}</div>
+              <div class="score">SCORE: {this.state.currentScore}</div>
+              <div class="timeRemaining">TIME: {this.state.timeRemaining}</div>
             </div>
-            <div class="options">
-              {this.renderOptions()}
-            </div>
-            <div class="scores">
-              {this.renderScores()}
-            </div>
-        </div>
+              {this.renderBoard()}
+          </div>
+          <div class="options">
+             {this.renderOptions()}
+          </div>
+          <div class="scores">
+            {this.renderScores()}
+          </div>
+      </div>
     );
   }
 
@@ -152,6 +147,7 @@ class Game extends React.Component {
     this.scoreboardSet(scoreboard);
   }
 
+////////TODO: Have to associate the ending of the countdown to saving the score
   timePass = async () => {
     var totalTime = this.state.timeRemaining;
     console.log("Game Start");
@@ -498,7 +494,9 @@ class Scores extends React.Component{
     return(
       <>
         <div class="ranking">
+        
           <div class="noteScoreBoard"><span class="scoreHeader">noteScoreBoard</span>{this.getScores(this.props.scoreboard[0])}</div>
+        
           <div class="questionFretScoreBoard"><span class="scoreHeader">questionFretScoreBoard</span>{this.getScores(this.props.scoreboard[1])}</div>
         </div>
       </>
