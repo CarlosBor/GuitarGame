@@ -25,3 +25,16 @@ yarn-error.log*
 
 src/style.css
 src/testing.txt
+
+.firebase/
+.firebaserc
+build.7z
+builds/
+firebase.json
+public/404.html
+public/asset-manifest.json
+public/precache-manifest.202e54e43bd5bcdec439e1e53b49a33d.js
+public/precache-manifest.a38935ece13a995e27c5536d5e103984.js
+public/service-worker.js
+public/static/
+testing/
