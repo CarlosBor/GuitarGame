@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 import './style.css'
+import calculateNote from './util/calculateNote'
+import noteCircle from './util/noteCircle';
 
 
 class Game extends React.Component {
@@ -502,29 +504,6 @@ class Scores extends React.Component{
       </>
     )
   }
-}
-const noteCircle = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
-
-function calculateNote(initialNote="A", stepNumber){
-    //Given a initial note and a number of steps, it returns the note X steps from the initial note.
-    initialNote = initialNote.toUpperCase();
-    stepNumber = stepNumber + findNote(initialNote);
-    while(stepNumber>11){
-        stepNumber=stepNumber-12;
-    }
-    return noteCircle[stepNumber];
-}
-
-function findNote(note){
-    //Given the notation of a note, returns its index in the note circle
-    note = note.toUpperCase();
-    let noteIndex;
-    try{
-        noteIndex = noteCircle.indexOf(note);
-    }catch(err){
-        console.log("Note not found in circle");
-    }
-    return noteIndex
 }
 
 function disableNodes(nodes){
