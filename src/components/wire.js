@@ -35,8 +35,8 @@ const Wire = (props) =>{
         notesUsed[i] = calculateNote(props.tuning,i);
     }
 
-    fretNodes = notesUsed.map((note) =>
-        <div class="fret" note={note+" "+props.wireNumber} onClick={checkAnswer}>{note}</div>
+    fretNodes = notesUsed.map((note, index) =>
+        <div className="fret" key={index} note={note+" "+props.wireNumber} onClick={checkAnswer}>{note}</div>
     );
 
     return(

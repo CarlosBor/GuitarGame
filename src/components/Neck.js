@@ -1,5 +1,5 @@
 import React from 'react';
-import Wire from './wire';
+import Wire from './Wire';
 
 
 const Neck = (props) =>{
@@ -9,7 +9,8 @@ const Neck = (props) =>{
         fretNumber={props.fretNumber} 
         wireNumber={props.wireNumber}
         tuning={props.tuning[i]} 
-        activeToggle={props.activeWires[i]} 
+        activeToggle={props.activeWires[i]}
+        key={i}
         />
     }
     return(

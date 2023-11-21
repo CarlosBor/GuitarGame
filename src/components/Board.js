@@ -5,7 +5,7 @@ import selectNoteButtons from './selectNoteButtons';
 const Board = (props) =>{
         return(
             <>
-                <div class="fretBoard">
+                <div className="fretBoard">
                     <Neck fretNumber={props.fretNumber} wireNumber={props.wireNumber} tuning={props.tuning} activeWires={props.activeWires}/>
                 </div>
                 {/* <selectNoteButtons/> */}

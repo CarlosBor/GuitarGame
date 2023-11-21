@@ -105,13 +105,7 @@ class Game extends React.Component {
       fretNumber : newFretNumber
     })
   }
-  activeWiresChange = event => {
-    var newActiveWires = this.state.activeWires.concat();
-    newActiveWires[event.target.className] = event.target.checked;
-    this.setState({
-      activeWires : newActiveWires
-    })
-  }
+
   
   timeRemainingChange = event =>{
     var newTimeRemaining = parseInt(event.target.value);
