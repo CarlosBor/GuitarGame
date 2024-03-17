@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Board from './Board';
 import Options from './Options';
 import Scores from './Scores';
@@ -13,6 +13,9 @@ const Game = () =>{
     const [currentScore, setCurrentScore] = useState(null);
     const [currentGameMode, setCurrentGameMode] = useState(null);
     const [scoreboard, setScoreboard] = useState([]);
+
+
+    console.log("Rerenders");
 
     function activeWiresChange(){
         console.log("Implement activeWiresChange");
@@ -58,14 +61,8 @@ const Game = () =>{
     const currentQuestionChange = (question) =>{
         setTimeRemaining(question);
     }
-    const timeRemainingSet = (time) =>{
-        setTimeRemaining(time);
-    }
     const currentGameModeSet=(mode)=>{
         setCurrentGameMode(mode);
-    }
-    const scoreboardSet = (scoreboard) =>{
-        setScoreboard(scoreboard);
     }
     const winScore = () =>{
         var newScore = this.state.currentScore + 100;
@@ -134,16 +131,13 @@ const timePass = async () => {
           localStorage.setItem("note",JSON.stringify([]));
         }
       }
-
-    var totalTime = this.state.timeRemaining;
+    var totalTime = timeRemaining;
     console.log("Game Start");
     var optionNodes = document.querySelector(".options").querySelectorAll("select, input");
     disableNodes(optionNodes);
-    while(this.state.timeRemaining > 0){
-      await this.sleep(1000);
-      this.timeRemainingSet(this.state.timeRemaining-1);
-      console.log("Time tick");
-    }
+
+
+    
       console.log("Time end");
       var fretNumber = document.querySelectorAll(".inGame").length;
       console.log(fretNumber);
@@ -153,7 +147,7 @@ const timePass = async () => {
         inGameNodes[i].classList.remove("inGame");
       }
       enableNodes(optionNodes);
-      this.saveScore(this.state.currentGameMode, fretNumber,totalTime);
+      this.saveScore(currentGameMode, fretNumber, totalTime);
       this.currentGameModeSet(null);
       this.timeRemainingSet(document.querySelector(".timeSelector").value);
       this.resetScore();

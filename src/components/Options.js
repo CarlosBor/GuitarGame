@@ -1,5 +1,4 @@
 import React from 'react';
-import TuningSelector from './TuningSelector';
 import StringNumberSelector from './StringNumberSelector';
 import FretNumberSelector from './FretNumberSelector';
 import GameStartButtons from './GameStartButtons';
@@ -9,18 +8,11 @@ import TimeSelector from './TimeSelector';
 const Options = (props) =>{
     return(
         <>
-            <TuningSelector
-            wireNumber={props.wireNumber}
-            activeWires={props.activeWires}
-            activeWiresChange={props.activeWiresChange}
-            tuningChange={props.tuningChange}
-            tuning={props.tuning}
-            />
             <StringNumberSelector
-            stringNumberChange = {props.stringNumberChange}
+            handleWireNumberChange = {props.handleWireNumberChange}
             />
             <FretNumberSelector
-            fretNumberChange = {props.fretNumberChange}
+            handleFretNumberChange = {props.handleFretNumberChange}
             />
             <GameStartButtons
             currentQuestionChange = {props.currentQuestionChange}
@@ -29,10 +21,12 @@ const Options = (props) =>{
             loseScore = {props.loseScore}
             timePass = {props.timePass}
             selectQuestionFret = {props.selectQuestionFret}
+            selectInvisibleQuestionFret = {props.selectInvisibleQuestionFret}
             currentGameModeSet = {props.currentGameModeSet}
+            disableNoteButtons = {props.disableNoteButtons}
             />
             <TimeSelector
-            timeRemainingChange = {props.timeRemainingChange}
+            handleTimeOptionChange = {props.handleTimeOptionChange}
             />
         </>
     )

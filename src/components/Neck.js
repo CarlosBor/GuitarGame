@@ -1,16 +1,17 @@
 import React from 'react';
 import Wire from './Wire';
 
-
 const Neck = (props) =>{
-    var wires = [];
-    for (var i=0;i<props.wireNumber;i++){
-        wires[i] = <Wire 
+    let wires = [];
+    for (let i=0;i<props.wireNumber;i++){
+        wires[i] = 
+        <Wire 
         fretNumber={props.fretNumber} 
-        wireNumber={props.wireNumber}
+        wireIndex={i+1}
         tuning={props.tuning[i]} 
         activeToggle={props.activeWires[i]}
         key={i}
+        checkAnswerValue={props.checkAnswerValue}
         />
     }
     return(

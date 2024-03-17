@@ -1,14 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 const TimeSelector = (props) =>{
+    const [timeOption, setTimeOption] = useState(60);
+
+    const handleChange = (event) =>{
+        const newValue = event.target.value;
+        setTimeOption(newValue);
+        props.handleTimeOptionChange(newValue);
+    }
+
     return(
         <>
             <div className="timeSelectorDiv">
-                <select className="timeSelector" onChange={props.timeRemainingChange}>
+                <select className="timeSelector" value={timeOption} onChange={handleChange}>
                     <option value ="3">3</option>
                     <option value="30">30</option>
                     <option value="45">45</option>
-                    <option value="60" defaultValue>60</option>
+                    <option value="60">60</option>
                     <option value="90">90</option>
                     <option value="120">120</option>
                 </select>
@@ -18,22 +26,3 @@ const TimeSelector = (props) =>{
       )
 }
 export default TimeSelector;
-
-// className TimeSelector extends React.Component{
-//     render(){
-//       return(
-//         <><div className="timeSelectorDiv">
-//         <select className="timeSelector" onChange={this.props.timeRemainingChange}>
-//           <option value ="3">3</option>
-//           <option value="30">30</option>
-//           <option value="45">45</option>
-//           <option value="60" selected>60</option>
-//           <option value="90">90</option>
-//           <option value="120">120</option>
-//         </select>
-//         <span>Time</span>
-//         </div>
-//         </>
-//       )
-//     }
-//   }
