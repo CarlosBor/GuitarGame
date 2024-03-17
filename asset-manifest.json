@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/guitarGame/static/css/main.29f9921a.css",
-    "main.js": "/guitarGame/static/js/main.e9b57be3.js",
-    "index.html": "/guitarGame/index.html",
-    "main.29f9921a.css.map": "/guitarGame/static/css/main.29f9921a.css.map",
-    "main.e9b57be3.js.map": "/guitarGame/static/js/main.e9b57be3.js.map"
+    "main.css": "/GuitarGame/static/css/main.29f9921a.css",
+    "main.js": "/GuitarGame/static/js/main.e9b57be3.js",
+    "index.html": "/GuitarGame/index.html",
+    "main.29f9921a.css.map": "/GuitarGame/static/css/main.29f9921a.css.map",
+    "main.e9b57be3.js.map": "/GuitarGame/static/js/main.e9b57be3.js.map"
   },
   "entrypoints": [
     "static/css/main.29f9921a.css",
